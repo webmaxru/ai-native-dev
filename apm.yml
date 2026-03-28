@@ -1,0 +1,10 @@
+name: agent-skills
+version: 1.0.0
+description: APM project for ai-native-dev
+author: Maxim Salnikov
+dependencies:
+  apm:
+  - webmaxru/ai-native-dev/skills/agent-package-manager
+  - webmaxru/ai-native-dev/skills/github-agentic-workflows
+  mcp: []
+scripts: {}

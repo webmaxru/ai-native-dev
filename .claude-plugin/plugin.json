@@ -1,0 +1,10 @@
+{
+  "name": "ai-native-dev-skills",
+  "description": "Agent skills for package management, skill deployment, and GitHub Agentic Workflows",
+  "version": "1.0.0",
+  "author": {
+    "name": "Maxim Salnikov"
+  },
+  "license": "MIT",
+  "keywords": ["agent-skills", "apm", "skill-deploy", "github-agentic-workflows", "ai-native"]
+}
