@@ -6,5 +6,7 @@
     "name": "Maxim Salnikov"
   },
   "license": "MIT",
+  "homepage": "https://github.com/webmaxru/ai-native-dev#readme",
+  "repository": "https://github.com/webmaxru/ai-native-dev",
   "keywords": ["agent-skills", "apm", "skill-deploy", "github-agentic-workflows", "ai-native"]
 }
