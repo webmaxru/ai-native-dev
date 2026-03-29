@@ -27,11 +27,11 @@ apm install OWNER/REPO/skills/SKILL_NAME
 
 ## Claude Code Marketplace
 
-**Detection:** Both `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` exist.
+**Detection:** `.claude-plugin/plugin.json` exists. `.claude-plugin/marketplace.json` is optional.
 
 **Config files:**
 
-1. `.claude-plugin/plugin.json` — Plugin metadata with `version` field at root level:
+1. `.claude-plugin/plugin.json` (required) — Plugin metadata with `version` field at root level:
    ```json
    {
      "name": "my-skills",
@@ -44,7 +44,7 @@ apm install OWNER/REPO/skills/SKILL_NAME
    }
    ```
 
-2. `.claude-plugin/marketplace.json` — Marketplace listing with version in `plugins[0].version` or root `version`:
+2. `.claude-plugin/marketplace.json` (optional) — Marketplace listing with version in `plugins[0].version` or root `version`. If absent, the plugin is assumed to be listed by a marketplace defined in another repository. Only `plugin.json` is version-bumped in that case.
    ```json
    {
      "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
@@ -63,7 +63,7 @@ apm install OWNER/REPO/skills/SKILL_NAME
    }
    ```
 
-**Deploy action:** Bump version in both JSON files, commit, push. The marketplace reads from GitHub directly.
+**Deploy action:** Bump version in `plugin.json` (and `marketplace.json` if present), commit, push. The marketplace reads from GitHub directly.
 
 **Required tools:** `git`
 
@@ -118,31 +118,13 @@ https://github.com/OWNER/REPO
 
 **Detection:** `package.json` exists in repository root.
 
-**Config files:** Same as VS Code — uses `package.json` for version tracking.
+**Config files:** Same as VS Code surface — `package.json` with `version` field.
 
-**Deploy action:** Bump version in `package.json`, commit, push. The Copilot CLI reads plugin metadata from GitHub.
+**Deploy action:** Bump version, commit, push. The Copilot CLI marketplace reads from GitHub directly.
 
 **Required tools:** `git`
 
 **Install command for consumers:**
 ```bash
 copilot plugin marketplace add OWNER/REPO
-copilot plugin install PLUGIN_NAME
 ```
-
----
-
-## Version Synchronization
-
-When multiple surfaces are active, all their config files must stay in sync. The deploy scripts handle this by:
-
-1. Detecting all active surfaces during preflight
-2. Collecting version fields from all config files
-3. Reporting mismatches as warnings
-4. Bumping all detected config files to the same target version during execution
-
-**Priority order for reading current version:**
-1. `.claude-plugin/plugin.json` → `.version`
-2. `package.json` → `.version`
-
-If versions disagree across files, the preflight script reports a warning and the bump step synchronizes them all.
