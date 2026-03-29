@@ -8,7 +8,7 @@ Detailed configuration requirements and deployment mechanics for each supported 
 
 **Config files:** None required beyond the git repository itself.
 
-**Deploy action:** Create a git tag and GitHub release with auto-generated notes.
+**Deploy action:** Create a git tag and GitHub release with a per-skill changelog. The changelog is built by diffing each changed skill directory against the previous release tag and summarizing user-visible changes as a concise bullet list grouped by skill name. Do not use `gh release create --generate-notes`; always provide an explicit `--notes` body with the per-skill changelog.
 
 **Required tools:**
 - `git` — always required
