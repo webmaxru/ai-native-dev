@@ -4,6 +4,17 @@ A **plugin marketplace** for AI-native development agent skills, maintained by [
 
 The marketplace aggregates agent skill plugins from this and other repositories into a single install point. Once installed, your coding agent gains access to every plugin and every skill each plugin provides — no per-skill setup required.
 
+## Contents
+
+- [Available Skills (all plugins)](#available-skills-all-plugins)
+- [Install](#install)
+  - [Install via Plugin Marketplace (recommended)](#install-via-plugin-marketplace-recommended)
+  - [Install Individual Skills](#install-individual-skills)
+- [Skills in This Repository](#skills-in-this-repository)
+  - [Agent Package Manager](#agent-package-manager)
+  - [Agent Skill Deploy](#agent-skill-deploy)
+  - [GitHub Agentic Workflows](#github-agentic-workflows)
+
 ## Available Skills (all plugins)
 
 Installing the marketplace gives you the following skills across all plugins:
@@ -16,15 +27,22 @@ Installing the marketplace gives you the following skills across all plugins:
 
 ## Install
 
-### Claude Code
+### Install via Plugin Marketplace (recommended)
+
+The fastest way to get all plugins at once. Add the marketplace, then install plugins by name.
+
+**GitHub Copilot CLI**
 
 ```bash
-/plugin marketplace add webmaxru/ai-native-dev
+copilot plugin marketplace add webmaxru/ai-native-dev
+copilot plugin add ai-native-dev-skills
+copilot plugin add web-ai-skills
+copilot plugin add enonic-skills
 ```
 
-### VS Code (GitHub Copilot)
+**VS Code (GitHub Copilot)**
 
-Run **Chat: Install Plugin From Source** from the Command Palette and enter:
+Add the marketplace by running **Chat: Install Plugin From Source** from the Command Palette and entering:
 
 ```
 https://github.com/webmaxru/ai-native-dev
@@ -38,20 +56,52 @@ Or add to your `settings.json`:
 ]
 ```
 
-Then browse **Agent Plugins** in the Extensions sidebar (`@agentPlugins`).
+Then open **Agent Plugins** in the Extensions sidebar (`@agentPlugins`), find the plugin you want, and click **Install**.
 
-### GitHub Copilot CLI
+**Claude Code**
 
 ```bash
-copilot plugin marketplace add webmaxru/ai-native-dev
+/plugin marketplace add webmaxru/ai-native-dev
+/plugin add ai-native-dev-skills
+/plugin add web-ai-skills
+/plugin add enonic-skills
 ```
 
-### Agent Package Manager (APM)
+### Install Individual Skills
+
+Install specific skills without the marketplace using APM or npm.
+
+**ai-native-dev-skills** (this repo)
 
 ```bash
 apm install webmaxru/ai-native-dev/skills/agent-package-manager
 apm install webmaxru/ai-native-dev/skills/agent-skill-deploy
 apm install webmaxru/ai-native-dev/skills/github-agentic-workflows
+```
+
+**web-ai-skills** ([webmaxru/agent-skills](https://github.com/webmaxru/agent-skills))
+
+```bash
+apm install webmaxru/agent-skills/skills/prompt-api
+apm install webmaxru/agent-skills/skills/language-detector-api
+apm install webmaxru/agent-skills/skills/translator-api
+apm install webmaxru/agent-skills/skills/writing-assistance-apis
+apm install webmaxru/agent-skills/skills/proofreader-api
+apm install webmaxru/agent-skills/skills/webmcp
+apm install webmaxru/agent-skills/skills/webnn
+```
+
+**enonic-skills** ([webmaxru/enonic-agent-skills](https://github.com/webmaxru/enonic-agent-skills))
+
+```bash
+apm install webmaxru/enonic-agent-skills/skills/enonic-api-reference
+apm install webmaxru/enonic-agent-skills/skills/enonic-content-migration
+apm install webmaxru/enonic-agent-skills/skills/enonic-content-type-generator
+apm install webmaxru/enonic-agent-skills/skills/enonic-guillotine-query-builder
+apm install webmaxru/enonic-agent-skills/skills/enonic-nextxp-integration
+apm install webmaxru/enonic-agent-skills/skills/enonic-sandbox-manager
+apm install webmaxru/enonic-agent-skills/skills/enonic-webhook-integrator
+apm install webmaxru/enonic-agent-skills/skills/enonic-controller-generator
 ```
 
 ---
