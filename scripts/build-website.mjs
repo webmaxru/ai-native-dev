@@ -195,7 +195,7 @@ async function main() {
   const templatePath = resolve(ROOT, "website", "template.html");
   let html = readFileSync(templatePath, "utf-8");
   html = html.replace(
-    "/*__CATALOG_DATA__*/",
+    '"__CATALOG_DATA__"',
     JSON.stringify(catalogData)
   );
 
