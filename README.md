@@ -7,6 +7,7 @@ The marketplace aggregates agent skill plugins from this and other repositories 
 ## Contents
 
 - [Available Skills (all plugins)](#available-skills-all-plugins)
+- [Website](#website)
 - [Install](#install)
   - [Install via Plugin Marketplace (recommended)](#install-via-plugin-marketplace-recommended)
   - [Install Individual Skills](#install-individual-skills)
@@ -18,6 +19,20 @@ The marketplace aggregates agent skill plugins from this and other repositories 
 ## Available Skills (all plugins)
 
 Installing the marketplace gives you the following skills across all plugins:
+
+| Plugin | Skills | Source |
+|--------|--------|--------|
+| **ai-native-dev-skills** | Agent Package Manager · Agent Skill Deploy · GitHub Agentic Workflows | this repo |
+| **web-ai-skills** | Prompt API · Language Detector · Translator · Writing Assistance · Proofreader · WebMCP · WebNN | [webmaxru/agent-skills](https://github.com/webmaxru/agent-skills) |
+| **enonic-skills** | Enonic CMS agent skills collection | [webmaxru/enonic-agent-skills](https://github.com/webmaxru/enonic-agent-skills) |
+
+## Website
+
+A browsable skills catalog is published as a GitHub Pages site. It aggregates skill metadata (names, descriptions, versions) from all three plugin repositories at build time.
+
+- **Rebuild locally:** `npm run build:website` — fetches live data from GitHub and regenerates `docs/`
+- **Automatic rebuild:** a GitHub Actions workflow rebuilds the site on push to `main` (when skill or website files change) and weekly via cron to pick up changes from external repos
+- **GitHub Pages:** configure the repository to serve from the `docs/` folder on the `main` branch
 
 | Plugin | Skills | Source |
 |--------|--------|--------|

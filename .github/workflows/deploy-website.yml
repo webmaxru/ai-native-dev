@@ -1,0 +1,48 @@
+name: Deploy Skills Catalog Website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'skills/**'
+      - 'scripts/build-website.mjs'
+      - 'website/**'
+  workflow_dispatch:
+  schedule:
+    # Weekly rebuild to pick up changes from external repos
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build website
+        run: node scripts/build-website.mjs
+
+      - name: Check for changes
+        id: check
+        run: |
+          git add docs/
+          if git diff --staged --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/
+          git commit -m "chore: rebuild skills catalog website [skip ci]"
+          git push
