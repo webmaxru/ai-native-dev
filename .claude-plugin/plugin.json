@@ -1,7 +1,7 @@
 {
   "name": "ai-native-dev-skills",
   "description": "Agent skills for package management, skill deployment, and GitHub Agentic Workflows",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "author": {
     "name": "Maxim Salnikov"
   },

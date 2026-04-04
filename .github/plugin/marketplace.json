@@ -13,7 +13,7 @@
       "description": "Agent skills for package management, skill deployment, and GitHub Agentic Workflows",
       "source": ".",
       "category": "development",
-      "version": "1.7.0"
+      "version": "1.7.1"
     },
     {
       "name": "web-ai-skills",
