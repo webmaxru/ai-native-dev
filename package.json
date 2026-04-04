@@ -2,7 +2,7 @@
   "dependencies": {
     "skills": "^1.4.5"
   },
-  "version": "1.6.0",
+  "version": "1.7.0",
   "scripts": {
     "build:website": "node scripts/build-website.mjs"
   }
