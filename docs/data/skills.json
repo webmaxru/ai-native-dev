@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-01T12:00:37.233Z",
+  "generatedAt": "2026-06-08T11:03:07.246Z",
   "totalSkills": 18,
   "plugins": [
     {
@@ -165,7 +165,7 @@
         {
           "name": "enonic-content-type-generator",
           "dirName": "enonic-content-type-generator",
-          "description": "Generates Enonic XP content type XML schema definitions from natural-language descriptions. Covers structured content modeling including input types, form layout, option sets, item sets, mixins, x-data, and content-type inheritance. Use when creating, scaffolding, or generating Enonic XP content type definitions, adding fields or sets to existing content types, or querying Enonic XP input types and super-types. Do not use for non-Enonic CMS content modeling, GraphQL queries, JavaScript/TypeScript controllers, or generic XML editing unrelated to Enonic schemas.",
+          "description": "Generates Enonic XP content type XML schema definitions from natural-language descriptions. Covers structured content modeling including input types, form layout, option sets, item sets, mixins, x-data, and content-type inheritance. Use when creating, scaffolding, or generating Enonic XP content type definitions, adding fields or sets to existing content types, or querying Enonic XP input types and super-types. Do not use for non-Enonic content modeling, GraphQL queries, JavaScript/TypeScript controllers, or generic XML editing unrelated to Enonic schemas.",
           "shortDescription": "Generates Enonic XP content type XML schema definitions from natural-language descriptions.",
           "version": "1.5",
           "author": "webmaxru",
