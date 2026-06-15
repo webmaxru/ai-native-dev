@@ -55,7 +55,7 @@ Useful frontmatter fields for professional workflows:
 3. `resources` for install-time companion files.
 4. `dependencies` for APM-managed skills and prompts.
 5. `runtimes` when tool or script versions matter.
-6. `concurrency` and `timeout-minutes` for operational control.
+6. `concurrency`, `timeout-minutes`, and `max-ai-credits` for operational and cost control.
 7. `mcp:` when the workflow needs custom tools or integrations via Model Context Protocol servers.
 
 Practical default: use `engine: copilot` unless the repository explicitly needs another model provider and is already wired for that provider's secret and runtime expectations.

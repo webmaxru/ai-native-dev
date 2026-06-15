@@ -113,11 +113,15 @@ gh aw health
 Use these signals:
 
 1. Success rate and trend.
-2. Token usage and cost.
+2. Token usage and AI Credits (AIC) cost.
 3. Firewall denials and blocked domains.
 4. Tool usage and missing-tool events.
 5. Threat-detection outcomes.
 6. Safe-output previews versus actual writes.
+
+Set a hard per-run budget with `max-ai-credits` in workflow frontmatter. Use `gh aw logs` and `gh aw audit` to identify runs consuming the most time, tokens, and AI Credits, then tighten prompts, triggers, and model choices before spend drifts upward.
+
+Export workflow traces and token data to OpenTelemetry-compatible OTLP backends for dashboards, alerting, and spend analysis. Compare cost with outcome quality so optimizations do not degrade useful results.
 
 ## Operational Hygiene
 
