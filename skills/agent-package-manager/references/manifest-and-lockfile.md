@@ -38,7 +38,7 @@ Prefer these patterns:
 * Reference individual agent files directly with their full path including the file extension, e.g. `owner/repo/agents/name.agent.md`.
 * Append `#ref` to any GitHub path form when you need a pinned tag or branch, e.g. `owner/repo/plugins/name#v2.1`.
 * Use a plain path string for Azure DevOps (`dev.azure.com/org/project/_git/path`) or Bitbucket (`bitbucket.org/team/repo#ref`) when no extra options are needed — the same shorthand style as GitHub.
-* Use the `git:` object form for GitLab, self-hosted git, or any non-GitHub host that needs explicit `path`, `ref`, or `alias` options alongside a full `https://` URL.
+* Use the `git:` object form for GitLab, Gitea, self-hosted git, or any non-GitHub host that needs explicit `path`, `ref`, or `alias` options alongside a full `https://` URL.
 * Use pinned refs for team-critical dependencies that must not drift unexpectedly.
 * Use local paths only for short-lived development loops.
 
@@ -59,11 +59,15 @@ dependencies:
     - dev.azure.com/acme/platform/_git/prompts/review.prompt.md
     # Bitbucket plain-string shorthand with ref
     - bitbucket.org/team/agent-rules#main
-    # GitLab with git: object form (full URL + path + ref + alias)
+    # GitLab or Gitea with git: object form (full URL + path + ref + alias)
     - git: https://gitlab.com/acme/repo.git
       path: instructions/security
       ref: v2.0
       alias: acme-sec
+    # Gitea self-hosted
+    - git: https://gitea.example.com/team/repo.git
+      path: instructions/style
+      ref: main
   mcp:
     - io.github.github/github-mcp-server
     - name: internal-knowledge-base
