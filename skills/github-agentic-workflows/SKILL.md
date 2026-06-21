@@ -35,14 +35,15 @@ metadata:
 7. Keep `tools:` and `toolsets:` minimal and specific to the task.
 8. Default to `engine: copilot` unless the task explicitly requires another engine and the repository is already prepared for that engine's authentication model.
 9. Configure `network:` with least privilege. Prefer ecosystem identifiers such as `node`, `python`, or `github` over individual registry domains when the compiler supports them.
-10. If strict mode and the installed CLI reject custom domains that the workflow still needs, prefetch external sources in deterministic setup steps and pass local files into the agent instead of broadly relaxing the firewall.
-11. Do not rely on `${{ steps.<id>.outputs.* }}` placeholders reaching the agent-visible markdown body in real runs. If prompt instructions depend on runtime values, write them into a deterministic local file during setup and tell the agent to read that file.
-12. Use imported or reusable workflows only when the repository genuinely benefits from shared logic or orchestration.
-13. For recurring work across a dynamic set of inputs, prefer a reusable GH-AW worker plus a deterministic YAML wrapper for discovery and matrix fan-out.
-14. When a reusable GH-AW worker is called from a matrix, do not leave it on the default shared workflow-level concurrency group. Set an explicit concurrency group keyed by the matrix input or prompt identity so parallel legs are not cancelled by GitHub's one-running-one-pending concurrency behavior.
-15. Recompile the workflow after frontmatter, imports, or other compile-time configuration changes.
-16. If only the markdown body changed and the workflow is edited directly on GitHub.com, do not recompile solely for body text changes.
-17. Treat `.github/aw/` as transient GH-AW runtime and compiler scratch space during local compile, validate, or trial flows unless the workflow intentionally uses checked-in files from that path.
+10. Set `max-ai-credits:` when the workflow runs on a schedule or could trigger large agent turns, to cap per-run AI Credits (AIC) spend before it drifts upward.
+11. If strict mode and the installed CLI reject custom domains that the workflow still needs, prefetch external sources in deterministic setup steps and pass local files into the agent instead of broadly relaxing the firewall.
+12. Do not rely on `${{ steps.<id>.outputs.* }}` placeholders reaching the agent-visible markdown body in real runs. If prompt instructions depend on runtime values, write them into a deterministic local file during setup and tell the agent to read that file.
+13. Use imported or reusable workflows only when the repository genuinely benefits from shared logic or orchestration.
+14. For recurring work across a dynamic set of inputs, prefer a reusable GH-AW worker plus a deterministic YAML wrapper for discovery and matrix fan-out.
+15. When a reusable GH-AW worker is called from a matrix, do not leave it on the default shared workflow-level concurrency group. Set an explicit concurrency group keyed by the matrix input or prompt identity so parallel legs are not cancelled by GitHub's one-running-one-pending concurrency behavior.
+16. Recompile the workflow after frontmatter, imports, or other compile-time configuration changes.
+17. If only the markdown body changed and the workflow is edited directly on GitHub.com, do not recompile solely for body text changes.
+18. Treat `.github/aw/` as transient GH-AW runtime and compiler scratch space during local compile, validate, or trial flows unless the workflow intentionally uses checked-in files from that path.
 
 **Step 4: Configure repository prerequisites and authentication**
 1. Read `references/authoring.md` before first-time repository setup.

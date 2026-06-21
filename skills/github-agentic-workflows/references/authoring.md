@@ -57,6 +57,7 @@ Useful frontmatter fields for professional workflows:
 5. `runtimes` when tool or script versions matter.
 6. `concurrency` and `timeout-minutes` for operational control.
 7. `mcp:` when the workflow needs custom tools or integrations via Model Context Protocol servers.
+8. `max-ai-credits:` to cap the AI Credits (AIC) a single run may consume and prevent runaway inference spend.
 
 Practical default: use `engine: copilot` unless the repository explicitly needs another model provider and is already wired for that provider's secret and runtime expectations.
 

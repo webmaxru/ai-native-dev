@@ -113,11 +113,15 @@ gh aw health
 Use these signals:
 
 1. Success rate and trend.
-2. Token usage and cost.
+2. Token usage and AI Credits (AIC) cost.
 3. Firewall denials and blocked domains.
 4. Tool usage and missing-tool events.
 5. Threat-detection outcomes.
 6. Safe-output previews versus actual writes.
+
+Cost control starts with visibility: use `gh aw logs` and `gh aw audit` to find runs consuming the most time, tokens, and AI Credits, then tighten prompts, triggers, and model choices before spend drifts upward. Set `max-ai-credits:` in frontmatter to cap the AI Credits a single run may consume. See [https://github.github.com/gh-aw/reference/cost-management/](https://github.github.com/gh-aw/reference/cost-management/) for the full cost-management reference.
+
+GH-AW supports OpenTelemetry export: workflow traces and token data can be exported to OTLP backends for dashboards, alerting, and spend analysis. See [https://github.github.com/gh-aw/reference/open-telemetry/](https://github.github.com/gh-aw/reference/open-telemetry/).
 
 ## Operational Hygiene
 
