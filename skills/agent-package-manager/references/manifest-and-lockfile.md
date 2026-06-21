@@ -84,7 +84,7 @@ Treat `apm.lock.yaml` as the exact resolved state of the dependency graph.
 
 Key properties:
 
-* It records resolved commits and refs.
+* It records resolved commits, refs, and content hashes.
 * It tracks direct and transitive dependency depth.
 * It records `deployed_files`, which drive safe uninstall and prune behavior.
 * It should be committed for reproducible installs across developers and CI.
@@ -109,7 +109,7 @@ Key points:
 
 Use the official APM docs in this order when deeper details are needed:
 
-* Quick start: `https://microsoft.github.io/apm/getting-started/quick-start/`
+* Quick start: `https://microsoft.github.io/apm/quickstart/`
 * CLI commands: `https://microsoft.github.io/apm/reference/cli-commands/`
 * Manifest schema: `https://microsoft.github.io/apm/reference/manifest-schema/`
 * Dependencies and lockfile guide: `https://microsoft.github.io/apm/guides/dependencies/`
