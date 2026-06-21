@@ -38,7 +38,7 @@ metadata:
 7. If the repository needs MCP discovery or selection, use `apm mcp list`, `apm mcp search <query>`, and `apm mcp show <server>` before editing MCP entries by hand.
 8. If installation output reports collisions or skipped files, read `references/troubleshooting.md` before retrying with forceful options.
 9. If the repository consumes packages from itself (self-referencing dependency), remind the user that changes must be committed and pushed before APM can fetch them. Read `references/troubleshooting.md` for the "Self-referencing dependencies" section.
-10. Note that `apm install` scans packages for security threats before deployment. If the scan raises warnings or blocks installation, address the flagged content rather than bypassing the check.
+10. Note that `apm install` scans packages for security threats before deployment, including hidden Unicode and content hash verification. If the scan raises warnings or blocks installation, address the flagged content rather than bypassing the check.
   11. If the repository is in an organization that enforces `apm-policy.yml`, policy is applied at install time and can block transitive MCP servers or restrict dependency sources. If install is blocked by policy, inspect the policy file or contact the org administrator; do not attempt to bypass the enforcement.
 
 **Step 4: Compile and validate only when it adds value**
