@@ -55,7 +55,7 @@ Useful frontmatter fields for professional workflows:
 3. `resources` for install-time companion files.
 4. `dependencies` for APM-managed skills and prompts.
 5. `runtimes` when tool or script versions matter.
-6. `concurrency` and `timeout-minutes` for operational control.
+6. `concurrency`, `timeout-minutes`, and `max-ai-credits` for operational and cost control.
 7. `mcp:` when the workflow needs custom tools or integrations via Model Context Protocol servers.
 8. `max-ai-credits:` to cap the AI Credits (AIC) a single run may consume and prevent runaway inference spend.
 
