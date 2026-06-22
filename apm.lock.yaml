@@ -1,12 +1,13 @@
 lockfile_version: '1'
-generated_at: '2026-05-27T13:26:15.006465+00:00'
-apm_version: 0.15.0
+generated_at: '2026-06-22T21:28:44.184406+00:00'
+apm_version: 0.21.0
 dependencies:
 - repo_url: webmaxru/ai-native-dev
   host: github.com
   resolved_commit: de031d33909ee7bbcaa47304f62612fdb2b3103b
   virtual_path: prompts/version-bump-and-deploy.prompt.md
   is_virtual: true
+  package_type: apm_package
   deployed_files:
   - .github/prompts/version-bump-and-deploy.prompt.md
   deployed_file_hashes:
@@ -20,6 +21,17 @@ dependencies:
   package_type: claude_skill
   deployed_files:
   - .agents/skills/agent-package-manager
+  - .agents/skills/agent-package-manager/SKILL.md
+  - .agents/skills/agent-package-manager/assets/apm.yml.template
+  - .agents/skills/agent-package-manager/references/command-workflows.md
+  - .agents/skills/agent-package-manager/references/manifest-and-lockfile.md
+  - .agents/skills/agent-package-manager/references/troubleshooting.md
+  deployed_file_hashes:
+    .agents/skills/agent-package-manager/SKILL.md: sha256:b965d8cd4fa83bc135f8500f5122646ff51ee5be2209a828959cbc64a5c9fdaa
+    .agents/skills/agent-package-manager/assets/apm.yml.template: sha256:bdb996550d9bb66228d642ab7d8acc30f671605a911f8360356c8816cec96b8c
+    .agents/skills/agent-package-manager/references/command-workflows.md: sha256:b111e4177614236f958765d5f442bc9971c261fa9b434bcd285064df0acc59a2
+    .agents/skills/agent-package-manager/references/manifest-and-lockfile.md: sha256:86692e91aef6a332a52db6f1ea30a94cd7eb1720773b7221607d3e37ccf04533
+    .agents/skills/agent-package-manager/references/troubleshooting.md: sha256:f57abc15c6c6bca5cf6f3fee02690aa68f2859fa4c58e5c8241c4e33b35e8f5f
   content_hash: sha256:23703369f67a877630aae5b99c3e8c44282046485078acad7e4b3dc61afd54f9
 - repo_url: webmaxru/ai-native-dev
   host: github.com
@@ -29,6 +41,17 @@ dependencies:
   package_type: claude_skill
   deployed_files:
   - .agents/skills/agent-skill-deploy
+  - .agents/skills/agent-skill-deploy/SKILL.md
+  - .agents/skills/agent-skill-deploy/references/surfaces.md
+  - .agents/skills/agent-skill-deploy/scripts/deploy-analyze.mjs
+  - .agents/skills/agent-skill-deploy/scripts/deploy-execute.mjs
+  - .agents/skills/agent-skill-deploy/scripts/deploy-preflight.mjs
+  deployed_file_hashes:
+    .agents/skills/agent-skill-deploy/SKILL.md: sha256:c4466e8fee9177ed63fb2150d9c031f67376e37eb4c0b30df9005a1408353189
+    .agents/skills/agent-skill-deploy/references/surfaces.md: sha256:d4ecefb9393beabe676dbf4f611a8afc7c10f0dd9cadee881c00d6c56eea4675
+    .agents/skills/agent-skill-deploy/scripts/deploy-analyze.mjs: sha256:88d551c2f879f2e4c72b720f998d908e5d3e56e0d63c55716554a86a1ee0521a
+    .agents/skills/agent-skill-deploy/scripts/deploy-execute.mjs: sha256:75dfa2f815e277904f2995523508ba57cd244a5f29a6ac143f11b2ddb01d8bff
+    .agents/skills/agent-skill-deploy/scripts/deploy-preflight.mjs: sha256:a7fa3badd63e2ffd86d74f439f5709f2f8709914f38e8f78198a703869252834
   content_hash: sha256:259c6df42c8e886c48f3e4a3593d185fbeb184b788da625351981a91b895d6be
 - repo_url: webmaxru/ai-native-dev
   host: github.com
@@ -38,4 +61,19 @@ dependencies:
   package_type: claude_skill
   deployed_files:
   - .agents/skills/github-agentic-workflows
+  - .agents/skills/github-agentic-workflows/SKILL.md
+  - .agents/skills/github-agentic-workflows/assets/workflow.template.md
+  - .agents/skills/github-agentic-workflows/references/authoring.md
+  - .agents/skills/github-agentic-workflows/references/examples.md
+  - .agents/skills/github-agentic-workflows/references/security-and-operations.md
+  - .agents/skills/github-agentic-workflows/references/troubleshooting.md
+  - .agents/skills/github-agentic-workflows/scripts/find-gh-aw-targets.mjs
+  deployed_file_hashes:
+    .agents/skills/github-agentic-workflows/SKILL.md: sha256:b1495313d60f7a728e97cd56d6faa32d65de62545a1f331cfa4873f8f9a68759
+    .agents/skills/github-agentic-workflows/assets/workflow.template.md: sha256:0f32061c1090fa5b1b745688649468949697504559ed21b64054598cac9ed6f0
+    .agents/skills/github-agentic-workflows/references/authoring.md: sha256:719431c26108dad33d2d86064ad501e2396dc6f866e421b5105e318ff6aec838
+    .agents/skills/github-agentic-workflows/references/examples.md: sha256:4a94f9918114d22f2748e94b7c23ad08821b7b543e7051f789ecfd7ed93221a6
+    .agents/skills/github-agentic-workflows/references/security-and-operations.md: sha256:8aa7f638a8bab6903b34aa2fd5ad9594de9ac4abe0557a73b3b5ed13fccda474
+    .agents/skills/github-agentic-workflows/references/troubleshooting.md: sha256:72b23b76f206c9fc9d907db5f818fd871c6c6691253bfc9ecb383d2ef3fac5f0
+    .agents/skills/github-agentic-workflows/scripts/find-gh-aw-targets.mjs: sha256:220639cd966c1f9f6072b7e03cd7f45926b59f9fa9c67ae07dac0940c5f0fa39
   content_hash: sha256:8c58e7e5f1713c0e2d2373a15d785f0e363484720d6d7b5f1ef005b8e7ef564a

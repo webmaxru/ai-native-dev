@@ -23,7 +23,7 @@ metadata:
 1. Read `assets/apm.yml.template` when the repository needs a fresh or repaired manifest structure.
 2. Keep `name` and `version` present at the top level; treat them as required contract fields.
 3. Add APM package dependencies under `dependencies.apm` and MCP servers under `dependencies.mcp`.
-4. Prefer canonical dependency forms in `apm.yml` after installation. Default to the repository shorthand `owner/repo/path` for GitHub-hosted skills and packages, for example `webmaxru/web-ai-agent-skills/skills/webmcp`, and preserve explicit `path`, `ref`, and `alias` only when they are needed.
+4. Prefer canonical dependency forms in `apm.yml` after installation. Default to the repository shorthand `owner/repo/path` for GitHub-hosted skills and packages, for example `webmaxru/agent-skills/skills/webmcp`, and preserve explicit `path`, `ref`, and `alias` only when they are needed.
 5. Use pinned refs for shared team packages when reproducibility matters more than automatic drift.
 6. Keep local path dependencies only for active local development. Replace them with remote references before recommending bundle distribution.
 7. If the request includes scripts, define them under `scripts` and verify that each script can be previewed or executed through `apm list`, `apm preview`, or `apm run`.
@@ -32,7 +32,7 @@ metadata:
 1. Preview risky changes with `apm install --dry-run`, `apm uninstall --dry-run`, or `apm prune --dry-run` when the repository already has installed packages.
 2. Install or update packages with `apm install`, `apm install <package>`, `apm install --update`, or `apm deps update` according to the requested scope.
 3. After running `apm install --update` or `apm deps update`, verify the lockfile `resolved_commit` actually changed. If packages were served from a stale cache, follow the "Stale packages after update" workflow in `references/troubleshooting.md`.
-4. When the request is to install a single skill from a repository, provide the package path down to that skill directory instead of a vague repo-only placeholder, for example `apm install webmaxru/web-ai-agent-skills/skills/webmcp`.
+4. When the request is to install a single skill from a repository, provide the package path down to that skill directory instead of a vague repo-only placeholder, for example `apm install webmaxru/agent-skills/skills/webmcp`.
 5. Verify the resolved state with `apm deps list`, `apm deps tree`, or `apm deps info <package>` after dependency changes.
 6. Treat `apm.lock.yaml` as the source of truth for resolved commits and deployed files. Recommend committing it for team and CI reproducibility.
 7. If the repository needs MCP discovery or selection, use `apm mcp list`, `apm mcp search <query>`, and `apm mcp show <server>` before editing MCP entries by hand.

@@ -41,7 +41,7 @@ Add packages directly:
 apm install microsoft/apm-sample-package
 apm install anthropics/skills/skills/frontend-design
 apm install microsoft/GitHub-Copilot-for-Azure/plugin/skills/azure-compliance
-apm install webmaxru/web-ai-agent-skills/skills/webmcp
+apm install webmaxru/agent-skills/skills/webmcp
 apm install ./packages/local-skill-pack
 ```
 
