@@ -59,7 +59,7 @@
       "displayName": "ard-registry-builder",
       "type": "application/ai-skill",
       "url": "https://github.com/webmaxru/ai-native-dev/tree/main/skills/ard-registry-builder",
-      "description": "Build, validate, test, and update registries and catalogs that follow the Agentic Resource Discovery (ARD) specification. Use this whenever the user works with an ai-catalog.json, a capability manifest, an ARD/AIR catalog or Agent Registry, urn:air: identifiers, trustManifest/attestations, representativeQueries, or an Agent Finder / discovery service — including authoring a new manifest, scaffolding one, fixing schema or URN errors, running conformance/validation, probing a registry's /search, /explore, or /agents REST endpoints, reviewing trust and federation metadata, or preparing to publish at /.well-known/ai-catalog.json. Trigger it even when the user only says \"ARD\", \"agentic resource discovery\", \"AI catalog manifest\", \"agent registry\", or \"make my agents discoverable\" without naming the file.",
+      "description": "Build, validate, test, and update registries and catalogs that follow the Agentic Resource Discovery (ARD) specification. Use this whenever the user works with an ai-catalog.json, a capability manifest, an ARD/AIR catalog or Agent Registry, urn:air: identifiers, trustManifest/attestations, representativeQueries, or an Agent Finder / discovery service — including authoring a new manifest, scaffolding one, fixing schema or URN errors, running conformance/validation, probing a registry's /search, /explore, or /agents REST endpoints, reviewing trust and federation metadata, or preparing to publish at /.well-known/ai-catalog.json. Trigger it even when the user only says \"ARD\", \"agentic resource discovery\", \"AI catalog manifest\", \"agent registry\", or \"make agents discoverable\" without naming the file.",
       "tags": [
         "ard",
         "registry",
@@ -72,7 +72,7 @@
         "urn:air: identifiers",
         "trustManifest/attestations"
       ],
-      "version": "1.0",
+      "version": "1.1",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",
