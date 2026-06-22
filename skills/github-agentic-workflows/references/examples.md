@@ -131,8 +131,10 @@ High-value workflow families from the GH-AW docs and gallery include:
 
 1. IssueOps and LabelOps.
 2. DailyOps and Monitoring.
-3. Quality and testing hygiene.
-4. Multi-repository coordination.
-5. ProjectOps and status reporting.
-6. Orchestration and task delegation.
-7. Assign-to-Copilot or create-agent-session follow-up automation.
+3. Continuous Documentation — documentation maintenance and consistency.
+4. Continuous Improvement — daily code simplification, refactoring, and style improvements.
+5. Quality and testing hygiene.
+6. Multi-repository coordination.
+7. ProjectOps and status reporting.
+8. Orchestration and task delegation.
+9. Assign-to-Copilot or create-agent-session follow-up automation.
