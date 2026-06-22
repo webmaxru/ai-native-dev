@@ -12,7 +12,11 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
-
+// Public base URL where the site and its /.well-known/ai-catalog.json
+// capability manifest are served (GitHub Pages). Used to emit an absolute
+// ARD HTML <link rel="ai-catalog"> discovery tag at build time.
+const SITE_URL = "https://webmaxru.github.io/ai-native-dev";
+const CATALOG_URL = `${SITE_URL}/.well-known/ai-catalog.json`;
 // ── Plugin definitions ────────────────────────────────────────────────
 const PLUGINS = [
   {
@@ -305,6 +309,9 @@ async function main() {
     '"__CATALOG_DATA__"',
     JSON.stringify(catalogData)
   );
+  // Inject the absolute capability-manifest URL into the ARD discovery
+  // <link rel="ai-catalog"> tag (and any other __CATALOG_URL__ placeholder).
+  html = html.replaceAll("__CATALOG_URL__", CATALOG_URL);
 
   const indexPath = resolve(docsDir, "index.html");
   writeFileSync(indexPath, html);
