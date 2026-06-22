@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-06-22T12:40:23.108Z",
-  "totalSkills": 18,
+  "generatedAt": "2026-06-22T21:41:26.096Z",
+  "totalSkills": 19,
   "plugins": [
     {
       "name": "AI-Native Development Skills",
@@ -8,7 +8,7 @@
       "repoUrl": "https://github.com/webmaxru/ai-native-dev",
       "description": "Core development tools: package management, skill deployment, and agentic workflows",
       "pluginAddCmd": "/plugin install ai-native-dev-skills@webmaxru-ai-native-dev",
-      "skillCount": 3,
+      "skillCount": 4,
       "skills": [
         {
           "name": "agent-package-manager",
@@ -31,6 +31,17 @@
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/ai-native-dev/tree/main/skills/agent-skill-deploy",
           "installCmd": "apm install webmaxru/ai-native-dev/skills/agent-skill-deploy"
+        },
+        {
+          "name": "ard-registry-builder",
+          "dirName": "ard-registry-builder",
+          "description": ">- Build, validate, test, and update registries and catalogs that follow the Agentic Resource Discovery (ARD) specification. Use this whenever the user works with an ai-catalog.json, a capability manifest, an ARD/AIR catalog or Agent Registry, urn:air: identifiers, trustManifest/attestations, representativeQueries, or an Agent Finder / discovery service — including authoring a new manifest, scaffolding one, fixing schema or URN errors, running conformance/validation, probing a registry's /search, /explore, or /agents REST endpoints, reviewing trust and federation metadata, or preparing to publish at /.well-known/ai-catalog.json. Trigger it even when the user only says \"ARD\", \"agentic resource discovery\", \"AI catalog manifest\", \"agent registry\", or \"make my agents discoverable\" without naming the file.",
+          "shortDescription": ">- Build, validate, test, and update registries and catalogs that follow the Agentic Resource Discovery (ARD) specification.",
+          "version": "1.0",
+          "author": "webmaxru",
+          "license": "MIT",
+          "githubUrl": "https://github.com/webmaxru/ai-native-dev/tree/main/skills/ard-registry-builder",
+          "installCmd": "apm install webmaxru/ai-native-dev/skills/ard-registry-builder"
         },
         {
           "name": "github-agentic-workflows",
