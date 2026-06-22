@@ -1,5 +1,5 @@
 lockfile_version: '1'
-generated_at: '2026-06-22T21:28:44.184406+00:00'
+generated_at: '2026-06-22T21:42:17.318235+00:00'
 apm_version: 0.21.0
 dependencies:
 - repo_url: webmaxru/ai-native-dev
@@ -53,6 +53,44 @@ dependencies:
     .agents/skills/agent-skill-deploy/scripts/deploy-execute.mjs: sha256:75dfa2f815e277904f2995523508ba57cd244a5f29a6ac143f11b2ddb01d8bff
     .agents/skills/agent-skill-deploy/scripts/deploy-preflight.mjs: sha256:a7fa3badd63e2ffd86d74f439f5709f2f8709914f38e8f78198a703869252834
   content_hash: sha256:259c6df42c8e886c48f3e4a3593d185fbeb184b788da625351981a91b895d6be
+- repo_url: webmaxru/ai-native-dev
+  host: github.com
+  resolved_commit: 3ad12ce9b69cfff3facbc1a227205695f20a0ea4
+  virtual_path: skills/ard-registry-builder
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/ard-registry-builder
+  - .agents/skills/ard-registry-builder/SKILL.md
+  - .agents/skills/ard-registry-builder/assets/ai-catalog.schema.json
+  - .agents/skills/ard-registry-builder/assets/templates/enterprise.json
+  - .agents/skills/ard-registry-builder/assets/templates/local-dev.json
+  - .agents/skills/ard-registry-builder/assets/templates/minimal.json
+  - .agents/skills/ard-registry-builder/evals/evals.json
+  - .agents/skills/ard-registry-builder/evals/files/broken-catalog.json
+  - .agents/skills/ard-registry-builder/references/data-model.md
+  - .agents/skills/ard-registry-builder/references/publishing.md
+  - .agents/skills/ard-registry-builder/references/registry-api.md
+  - .agents/skills/ard-registry-builder/references/validation-rules.md
+  - .agents/skills/ard-registry-builder/scripts/new_catalog.py
+  - .agents/skills/ard-registry-builder/scripts/test_registry.py
+  - .agents/skills/ard-registry-builder/scripts/validate_catalog.py
+  deployed_file_hashes:
+    .agents/skills/ard-registry-builder/SKILL.md: sha256:d50ef6e32c1b766856f8eae90f4b6a8be0e22ae0a93f5b970dbb287992ed0cc1
+    .agents/skills/ard-registry-builder/assets/ai-catalog.schema.json: sha256:c55238483a4738e08b250bdd6af1f4dc05a91afe882c649d224d09c19cd8fe09
+    .agents/skills/ard-registry-builder/assets/templates/enterprise.json: sha256:1e3a6c1a0c58495f0280ada311484a5a73e1a5f50909e70dd375ce65b7345447
+    .agents/skills/ard-registry-builder/assets/templates/local-dev.json: sha256:b1123454b7eef1a69e6b902e5e1857f058a368bc2ed309615468db5afdf138b0
+    .agents/skills/ard-registry-builder/assets/templates/minimal.json: sha256:80e54002df5c7a4fddc76adfdabf8d75d4c302d5edec6bb5e1ff8c56498da60b
+    .agents/skills/ard-registry-builder/evals/evals.json: sha256:080891a9d546d3a2e10bce4b5f3a707947e3b6e61607c5783eadaa128c6d7849
+    .agents/skills/ard-registry-builder/evals/files/broken-catalog.json: sha256:1c16c317ce8f1cfba707b3ee495a56908b5b4eda698131ee855a45b49df5f8ad
+    .agents/skills/ard-registry-builder/references/data-model.md: sha256:e3628fdcaa220787e110e7f05c15b342329b301e5bf5fc569c561f22dd446b73
+    .agents/skills/ard-registry-builder/references/publishing.md: sha256:a3b390ec3623080f7c46894670c6140b0de3394e837fcf45d3cee2183c209474
+    .agents/skills/ard-registry-builder/references/registry-api.md: sha256:21fcfc86a2b7923f0972564754eb81b5cfe31953b9ee80139790cac985d38269
+    .agents/skills/ard-registry-builder/references/validation-rules.md: sha256:e784074828d71d1563ffd5863de00addf27aeaecff26119a22ee7ea44c73edff
+    .agents/skills/ard-registry-builder/scripts/new_catalog.py: sha256:cc115b8e430eae8b07e5ee59980fd3c8fd2f136d78abd2c8d44aba1f9d90fec1
+    .agents/skills/ard-registry-builder/scripts/test_registry.py: sha256:67f8e77d76866bc2a9b57553d762f889d47b0bd84078950c883b809b0064f923
+    .agents/skills/ard-registry-builder/scripts/validate_catalog.py: sha256:5b824902a5ac36aac48c7be42cfbb50475b6732bb47938f164a1bded48b36c3f
+  content_hash: sha256:6305cd221bbc435003ed0ffc4e9254cde999851737900c261f71235518b58d9c
 - repo_url: webmaxru/ai-native-dev
   host: github.com
   resolved_commit: d8581f387341829f0e454b8246a07b4e648bb9ed

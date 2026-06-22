@@ -13,7 +13,10 @@
     "apm",
     "skill-deploy",
     "github-agentic-workflows",
-    "ai-native"
+    "ai-native",
+    "ard",
+    "ard-registry-builder",
+    "agentic-resource-discovery"
   ],
   "skills": "skills/"
 }
