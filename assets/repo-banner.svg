@@ -49,6 +49,10 @@
     <path d="M 10 120 L 14 124 L 22 116" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
     <text x="50" y="127" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="600" fill="#f8fafc">Agent Skill Deploy Skill</text>
 
+    <rect x="0" y="156" width="32" height="32" rx="8" fill="rgba(59, 130, 246, 0.15)" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M 10 172 L 14 176 L 22 168" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="50" y="179" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="600" fill="#f8fafc">ARD Registry Builder Skill</text>
+
   </g>
 
   <g transform="translate(600, 190)">

@@ -14,6 +14,7 @@ The marketplace aggregates agent skill plugins from this and other repositories 
 - [Skills in This Repository](#skills-in-this-repository)
   - [Agent Package Manager](#agent-package-manager)
   - [Agent Skill Deploy](#agent-skill-deploy)
+  - [ARD Registry Builder](#ard-registry-builder)
   - [GitHub Agentic Workflows](#github-agentic-workflows)
 
 ## Available Skills (all plugins)
@@ -22,7 +23,7 @@ Installing the marketplace gives you the following skills across all plugins:
 
 | Plugin | Skills | Source |
 |--------|--------|--------|
-| **ai-native-dev-skills** | Agent Package Manager · Agent Skill Deploy · GitHub Agentic Workflows | this repo |
+| **ai-native-dev-skills** | Agent Package Manager · Agent Skill Deploy · ARD Registry Builder · GitHub Agentic Workflows | this repo |
 | **web-ai-skills** | Prompt API · Language Detector · Translator · Writing Assistance · Proofreader · WebMCP · WebNN | [webmaxru/web-ai-agent-skills](https://github.com/webmaxru/web-ai-agent-skills) |
 | **enonic-skills** | Enonic CMS agent skills collection | [webmaxru/enonic-agent-skills](https://github.com/webmaxru/enonic-agent-skills) |
 
@@ -36,7 +37,7 @@ A browsable skills catalog is published as a GitHub Pages site. It aggregates sk
 
 | Plugin | Skills | Source |
 |--------|--------|--------|
-| **ai-native-dev-skills** | Agent Package Manager · Agent Skill Deploy · GitHub Agentic Workflows | this repo |
+| **ai-native-dev-skills** | Agent Package Manager · Agent Skill Deploy · ARD Registry Builder · GitHub Agentic Workflows | this repo |
 | **web-ai-skills** | Prompt API · Language Detector · Translator · Writing Assistance · Proofreader · WebMCP · WebNN | [webmaxru/web-ai-agent-skills](https://github.com/webmaxru/web-ai-agent-skills) |
 | **enonic-skills** | Enonic CMS agent skills collection | [webmaxru/enonic-agent-skills](https://github.com/webmaxru/enonic-agent-skills) |
 
@@ -93,6 +94,7 @@ Install with APM:
 ```bash
 apm install webmaxru/ai-native-dev/skills/agent-package-manager
 apm install webmaxru/ai-native-dev/skills/agent-skill-deploy
+apm install webmaxru/ai-native-dev/skills/ard-registry-builder
 apm install webmaxru/ai-native-dev/skills/github-agentic-workflows
 ```
 
@@ -101,6 +103,7 @@ Install with npm:
 ```bash
 npx skills add webmaxru/ai-native-dev --skill agent-package-manager
 npx skills add webmaxru/ai-native-dev --skill agent-skill-deploy
+npx skills add webmaxru/ai-native-dev --skill ard-registry-builder
 npx skills add webmaxru/ai-native-dev --skill github-agentic-workflows
 ```
 
@@ -162,7 +165,7 @@ npx skills add webmaxru/enonic-agent-skills --skill enonic-controller-generator
 
 ## Skills in This Repository
 
-The `skills/` directory contains three agent skills shipped as part of the **ai-native-dev-skills** plugin.
+The `skills/` directory contains four agent skills shipped as part of the **ai-native-dev-skills** plugin.
 
 ### Agent Package Manager
 
@@ -188,6 +191,18 @@ Deploys agent skill collections from any GitHub repository with a `/skills` fold
 - Bump versions across all detected config files in one pass
 - Publish to GitHub Releases, Claude Code marketplace, VS Code plugin marketplace, and Copilot CLI marketplace
 - Run dry-run deployments to preview changes without side effects
+
+### ARD Registry Builder
+
+Builds, validates, tests, and maintains registries and catalogs that follow the Agentic Resource Discovery (ARD) specification, so AI clients can discover agents, MCP servers, skills, and APIs at runtime instead of hardcoding them.
+
+**What the agent can do for you:**
+
+- Scaffold a starter `ai-catalog.json` capability manifest from minimal, enterprise, or local-dev templates
+- Validate manifests against the ARD JSON Schema plus semantic conformance rules
+- Probe a live Agent Registry's `/search`, `/agents`, and `/explore` endpoints for compliance
+- Diagnose and fix `urn:air:` identifier, schema, and trust-manifest errors
+- Add entries, bump versions, and update endpoints while keeping the catalog valid
 
 ### GitHub Agentic Workflows
 
