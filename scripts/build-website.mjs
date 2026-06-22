@@ -35,6 +35,17 @@ const PLUGINS = [
   },
 ];
 
+// ── ARD capability manifest config ────────────────────────────────────
+// Identity (host) for the generated ai-catalog.json. Only displayName and
+// documentation are asserted here — no unverifiable trust/identity claims.
+const ARD_HOST = {
+  displayName: "AI-Native Development Skills",
+  documentationUrl: "https://github.com/webmaxru/ai-native-dev#readme",
+};
+
+// IANA-style media type advertised in each entry's ARD envelope `type` field.
+const ARD_SKILL_TYPE = "application/ai-skill";
+
 // ── Frontmatter parser (no external deps) ─────────────────────────────
 function parseFrontmatter(text) {
   const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -64,8 +75,9 @@ function parseFrontmatter(text) {
       const key = topMatch[1];
       let value = topMatch[2].trim();
 
-      // Handle multi-line description with >
-      if (value === ">" || value === "|") {
+      // Handle multi-line block scalars: >, |, and chomping/indent variants
+      // such as >-, >+, |-, |+, |2 (otherwise the indicator leaks into the value).
+      if (/^[>|][-+]?\d*$/.test(value)) {
         currentIndentKey = key;
         result[key] = "";
         continue;
@@ -165,6 +177,97 @@ async function fetchPluginSkills(plugin) {
   };
 }
 
+// ── ARD manifest builder ──────────────────────────────────────────────
+// Build a stable urn:air: identity from a GitHub "owner/repo" and skill dir.
+// Publisher segment is the verifiable FQDN github.com (the trust anchor);
+// the namespace is owner:repo and the terminal name is the skill folder.
+function buildSkillUrn(repo, dirName) {
+  const [owner, repoName] = repo.split("/");
+  const seg = (s) => String(s).replace(/[^a-zA-Z0-9._-]/g, "-");
+  return `urn:air:github.com:${seg(owner)}:${seg(repoName)}:${seg(dirName)}`;
+}
+
+// Derive simple keyword tags from a skill directory name (e.g.
+// "agent-package-manager" -> ["agent", "package", "manager"]).
+function deriveTags(dirName) {
+  return [
+    ...new Set(
+      String(dirName)
+        .split(/[-_]/)
+        .map((t) => t.toLowerCase())
+        .filter((t) => t.length >= 3)
+    ),
+  ];
+}
+
+// Derive 2–5 representative natural-language queries from a skill description.
+// Pulls the "Use when/whenever ..." intent clause and splits it into phrases.
+// Returns null when fewer than 2 usable phrases can be extracted (the field is
+// optional, but when present the ARD schema requires 2–5 items).
+function deriveRepresentativeQueries(description) {
+  if (!description) return null;
+  const match = description.match(
+    /\bUse (?:it |this )?(?:when|whenever)\b(.*?)(?:Don['’]t use|Do NOT use|$)/is
+  );
+  if (!match) return null;
+  const clause = match[1].replace(
+    /^\s*the user(?:\s+(?:works with|wants to|is|needs to))?\s*/i,
+    ""
+  );
+  const phrases = clause
+    .split(",")
+    .map((p) =>
+      p
+        .replace(/^\s*(?:or|and)\s+/i, "")
+        .replace(/[\s.;:—-]+$/g, "")
+        .trim()
+    )
+    .filter((p) => p.length >= 4 && p.length <= 80)
+    .filter((p) => !/^(?:including|especially|etc)\b/i.test(p));
+  const unique = [...new Set(phrases)];
+  return unique.length >= 2 ? unique.slice(0, 5) : null;
+}
+
+// Assemble an ARD ai-catalog.json capability manifest from the collected data.
+// Every exposed skill becomes one catalog entry (identity = URN, location = url).
+function buildArdManifest(catalogData) {
+  const entries = [];
+  for (const plugin of catalogData.plugins) {
+    for (const skill of plugin.skills) {
+      const entry = {
+        identifier: buildSkillUrn(plugin.repo, skill.dirName),
+        displayName: skill.name,
+        type: ARD_SKILL_TYPE,
+        url: skill.githubUrl,
+        description: skill.description,
+      };
+
+      const tags = deriveTags(skill.dirName);
+      if (tags.length) entry.tags = tags;
+
+      const queries = deriveRepresentativeQueries(skill.description);
+      if (queries) entry.representativeQueries = queries;
+
+      if (skill.version) entry.version = String(skill.version);
+
+      const metadata = {};
+      if (skill.author) metadata.author = skill.author;
+      if (skill.license) metadata.license = skill.license;
+      metadata.plugin = plugin.name;
+      metadata.repo = plugin.repo;
+      entry.metadata = metadata;
+
+      entries.push(entry);
+    }
+  }
+
+  return {
+    specVersion: "1.0",
+    host: { ...ARD_HOST },
+    entries,
+  };
+}
+
 // ── Main ──────────────────────────────────────────────────────────────
 async function main() {
   console.log("Building skills catalog website...\n");
@@ -206,6 +309,15 @@ async function main() {
   const indexPath = resolve(docsDir, "index.html");
   writeFileSync(indexPath, html);
   console.log(`  Written ${indexPath}`);
+
+  // Generate the ARD ai-catalog.json capability manifest for all exposed
+  // skills and publish it at the conventional /.well-known/ discovery path.
+  const ardManifest = buildArdManifest(catalogData);
+  const wellKnownDir = resolve(docsDir, ".well-known");
+  mkdirSync(wellKnownDir, { recursive: true });
+  const manifestPath = resolve(wellKnownDir, "ai-catalog.json");
+  writeFileSync(manifestPath, JSON.stringify(ardManifest, null, 2));
+  console.log(`  Written ${manifestPath} (${ardManifest.entries.length} entries)`);
 
   console.log("\nDone!");
 }

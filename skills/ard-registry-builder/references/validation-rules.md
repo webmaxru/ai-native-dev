@@ -66,3 +66,15 @@ independent second opinion on pure schema conformance:
 npx ajv-cli validate -s assets/ai-catalog.schema.json -d ./ai-catalog.json
 ```
 AJV checks structure only; it does not perform the ARD semantic checks above.
+
+## Cross-checking against the official conformance tool (optional)
+The ARD spec repo ships an official, zero-dependency conformance CLI written in Python that
+this validator deliberately mirrors — the same two layers (`jsonschema` structural checks plus
+ARD semantic checks such as URN formatting, Strict Value-or-Reference, and
+`representativeQueries` sizing). To cross-check a manifest against the canonical reference:
+```bash
+./conformance/bin/conformance-test manifest ./ai-catalog.json
+./conformance/bin/conformance-test manifest https://example.com/.well-known/ai-catalog.json
+```
+Because it applies the same rule set, treat a pass as a conformance confirmation, not an
+independent engine — use AJV above when you want a structurally independent second opinion.

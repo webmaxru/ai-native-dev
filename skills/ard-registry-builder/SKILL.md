@@ -9,7 +9,7 @@ description: >-
   conformance/validation, probing a registry's /search, /explore, or /agents REST endpoints,
   reviewing trust and federation metadata, or preparing to publish at /.well-known/ai-catalog.json.
   Trigger it even when the user only says "ARD", "agentic resource discovery", "AI catalog
-  manifest", "agent registry", or "make my agents discoverable" without naming the file.
+  manifest", "agent registry", or "make agents discoverable" without naming the file.
 license: MIT
 metadata:
   author: webmaxru

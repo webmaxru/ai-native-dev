@@ -83,7 +83,10 @@ ARD is an envelope; `type` is an IANA media type naming the wrapped artifact. Co
 | `application/parquet`, etc. | Any other artifact (datasets, files) |
 
 The validator only warns when `type` is not a media type (no `/`); it does not hard-code an
-allow-list, because the envelope is deliberately open.
+allow-list, because the envelope is deliberately open. Per spec §3.3, the de-facto types
+`application/a2a-agent-card+json` and `application/mcp-server-card+json` are still tracking
+toward formal IANA registration and their exact form may change, so intermediaries are advised
+not to strictly verify them — another reason the validator warns rather than rejects.
 
 ## Strict Value-or-Reference
 An entry MUST carry **exactly one** of:

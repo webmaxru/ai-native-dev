@@ -1,7 +1,7 @@
 # ARD Registry REST API
 
 The authoritative definition is the bundled-by-reference OpenAPI 3.1 spec
-(`docs/spec/schemas/ard.openapi.yaml` in the spec repo; summarized here). A compliant
+(`spec/schemas/ard.openapi.yaml` in the spec repo; summarized here). A compliant
 **Agent Registry** is any service that indexes catalog entries and exposes this HTTP
 interface. The mandated floor for interoperability is `POST /search`; everything else is
 optional.
@@ -115,6 +115,9 @@ Uniform body: `{ "errorCode": "INVALID_ARGUMENT", "message": "..." }`.
 
 `scripts/test_registry.py` verifies the required `/search` behavior (including the 400 on a
 missing `query.text`) and treats `/agents` and `/explore` as optional (skipped when absent).
+It mirrors the registry mode of the spec's official conformance CLI
+(`conformance/bin/conformance-test registry <base-url>`), the canonical reference you can run
+as a cross-check.
 
 ## Discovering a registry's base URL
 Inside a static manifest, a dynamic registry advertises itself as an entry of type
