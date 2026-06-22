@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-22T12:11:00.615Z",
+  "generatedAt": "2026-06-22T12:40:23.108Z",
   "totalSkills": 18,
   "plugins": [
     {
@@ -15,7 +15,7 @@
           "dirName": "agent-package-manager",
           "description": "Installs, configures, audits, and operates Agent Package Manager (APM) in repositories. Use when initializing apm.yml, installing or updating packages, validating manifests, managing lockfiles, compiling agent context, browsing MCP servers, setting up runtimes, or packaging resolved context for CI and team distribution. Don't use for writing a single skill by hand, generic package managers like npm or pip, or non-APM agent configuration systems.",
           "shortDescription": "Installs, configures, audits, and operates Agent Package Manager (APM) in repositories.",
-          "version": "1.5",
+          "version": "1.6",
           "author": "webmaxru",
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/ai-native-dev/tree/main/skills/agent-package-manager",
@@ -37,7 +37,7 @@
           "dirName": "github-agentic-workflows",
           "description": "Authors, reviews, installs, and debugs GitHub Agentic Workflows in repositories, including workflow markdown, frontmatter, gh aw compile and run flows, safe outputs, security guardrails, and operational patterns. Use when creating or maintaining GH-AW automation. Don't use for standard deterministic GitHub Actions YAML, generic CI pipelines, or non-GitHub automation systems.",
           "shortDescription": "Authors, reviews, installs, and debugs GitHub Agentic Workflows in repositories, including workflow markdown, frontmatter, gh aw compile and run flows, safe outputs, security guardrails, and operational patterns.",
-          "version": "1.3",
+          "version": "1.4",
           "author": "webmaxru",
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/ai-native-dev/tree/main/skills/github-agentic-workflows",
