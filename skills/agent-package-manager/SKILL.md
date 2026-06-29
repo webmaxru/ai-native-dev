@@ -4,7 +4,7 @@ description: Installs, configures, audits, and operates Agent Package Manager (A
 license: MIT
 metadata:
   author: webmaxru
-  version: "1.6"
+  version: "1.7"
 ---
 
 # Agent Package Manager
@@ -12,7 +12,7 @@ metadata:
 ## Procedures
 
 **Step 1: Assess the repository and the requested APM outcome**
-1. Inspect the repository root for `apm.yml`, `apm.lock.yaml`, `.github/`, `.claude/`, `.codex/`, `.cursor/`, `.gemini/`, `.opencode/`, `.windsurf/`, and `apm_modules/`.
+1. Inspect the repository root for `apm.yml`, `apm.lock.yaml`, `.github/`, `.claude/`, `.codex/`, `.cursor/`, `.gemini/`, `.opencode/`, `.windsurf/`, `.kiro/`, and `apm_modules/`.
 2. Execute `apm --version` and `apm config` to confirm the installed CLI and current configuration.
 3. If `apm.yml` exists, read `references/manifest-and-lockfile.md` before changing dependencies, scripts, or compilation settings.
 4. If the request is about package installation, updates, pruning, or removal, read `references/command-workflows.md` before executing APM commands.
