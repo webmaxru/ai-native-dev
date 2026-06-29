@@ -50,6 +50,11 @@ ranking), `version`, `updatedAt` (ISO 8601 date-time), `metadata` (map of scalar
 `representativeQueries` is the single highest-leverage optional field for discoverability:
 registries embed these 2–5 phrases to match user intent. Add them to anything you want found.
 
+Entries MAY use **Schema.org vocabulary** in descriptive fields. Any Schema.org property used
+in an entry becomes a filterable dimension in the search API — pricing, geographic coverage,
+supported languages, certifications, etc. — without requiring any spec change. See
+`references/registry-api.md` for filter key syntax.
+
 ## The URN identifier
 Format (RFC 8141): `urn:air:<publisher>:<namespace?>:<agent-name>`
 
@@ -65,7 +70,8 @@ Publisher guidance by context (see `urn-naming-guide` in the spec for full ratio
 - **Enterprise / own domain** → use the real FQDN everywhere (`urn:air:acme.com:finance:tax`),
   even locally; only the `url` changes between dev and prod.
 - **Solo dev, public** → anchor to a namespace you control: `gitlab.com:you:tool`,
-  `npmjs.com:you:tool`, `you.github.io:tool`, `you.vercel.app:tool`.
+  `npmjs.com:you:tool`, `pypi.org:you:tool`, `you.github.io:tool`, `you.vercel.app:tool`,
+  `you.netlify.app:tool`.
 - **Local / private only** → use a reserved placeholder FQDN: `agent.localhost` or
   `example.com`. Never use bare `localhost` as the publisher — it is not globally unique or
   verifiable and breaks federation.
@@ -104,6 +110,7 @@ ARD *communicates* trust evidence; it never confers trust — clients verify ind
 | :-- | :-- | :-- |
 | `identity` | yes | Cryptographic principal: SPIFFE ID, `did:web`, or HTTPS URI. Its domain SHOULD align with the URN publisher. |
 | `identityType` | no | `spiffe` / `did` / `https` / `other`. |
+| `trustSchema` | no | Describes the trust framework applied: requires `identifier` (URN of the framework) and `version`; optional `governanceUri` and `verificationMethods[]`. Present in the JSON Schema but not in the CDDL — a known doc inconsistency; follow the JSON Schema. |
 | `attestations[]` | no | Each requires `type`, `uri`, **`mediaType`**; optional `digest` (sha256). |
 | `provenance[]` | no | Each requires `relation` (`derivedFrom`/`publishedFrom`/`copiedFrom`) and `sourceId`; optional `sourceDigest`. |
 | `signature` | no | Detached JWS over the trust manifest. |
