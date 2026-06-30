@@ -13,7 +13,7 @@ description: >-
 license: MIT
 metadata:
   author: webmaxru
-  version: "1.1"
+  version: "1.2"
 ---
 
 # ARD Registry Builder
