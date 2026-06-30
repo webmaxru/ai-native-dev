@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-29T11:06:41.277Z",
+  "generatedAt": "2026-06-30T21:17:19.193Z",
   "totalSkills": 19,
   "plugins": [
     {
@@ -48,7 +48,7 @@
           "dirName": "github-agentic-workflows",
           "description": "Authors, reviews, installs, and debugs GitHub Agentic Workflows in repositories, including workflow markdown, frontmatter, gh aw compile and run flows, safe outputs, security guardrails, and operational patterns. Use when creating or maintaining GH-AW automation. Don't use for standard deterministic GitHub Actions YAML, generic CI pipelines, or non-GitHub automation systems.",
           "shortDescription": "Authors, reviews, installs, and debugs GitHub Agentic Workflows in repositories, including workflow markdown, frontmatter, gh aw compile and run flows, safe outputs, security guardrails, and operational patterns.",
-          "version": "1.4",
+          "version": "1.5",
           "author": "webmaxru",
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/ai-native-dev/tree/main/skills/github-agentic-workflows",
@@ -113,7 +113,7 @@
           "dirName": "webmcp",
           "description": "Implements and debugs browser WebMCP integrations in JavaScript or TypeScript web apps. Use when exposing imperative tools through document.modelContext (with a navigator.modelContext fallback), annotating HTML forms for declarative tools, handling agent-invoked form flows, or validating WebMCP behavior in the current Chrome preview. Don't use for server-side MCP servers, REST tool backends, or non-browser providers.",
           "shortDescription": "Implements and debugs browser WebMCP integrations in JavaScript or TypeScript web apps.",
-          "version": "1.3",
+          "version": "1.5",
           "author": "webmaxru",
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/web-ai-agent-skills/tree/main/skills/webmcp",
