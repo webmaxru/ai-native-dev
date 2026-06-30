@@ -4,13 +4,14 @@ Use this reference when a workflow needs security review, authentication design,
 
 ## Security Model Summary
 
-GitHub Agentic Workflows uses five named security layers that work together to contain a confused or compromised agent:
+GitHub Agentic Workflows uses six named security layers that work together to contain a confused or compromised agent:
 
 1. **Read-only tokens**: The agent receives a GitHub token scoped to read-only permissions. Even if the agent attempts to create a pull request, push code, or delete a file, the underlying token does not allow it.
 2. **Zero secrets in the agent**: The agent process never receives write tokens, API keys, or other sensitive credentials. Those secrets exist only in separate, isolated jobs that run after the agent has finished and its output has passed review.
 3. **Network firewall**: The agent runs inside an isolated container. The Agent Workflow Firewall (AWF) routes all outbound traffic through a Squid proxy that enforces an explicit domain allowlist. Traffic to any other destination is dropped at the kernel level.
 4. **Safe outputs**: The agent cannot write to GitHub directly. It produces a structured artifact describing its intended actions. A separate job with scoped write permissions reads that artifact and applies only what the workflow explicitly permits.
 5. **Agentic threat detection**: Before any output is applied, a dedicated threat detection job runs an AI-powered scan of the agent's proposed changes, checking for prompt injection, leaked credentials, and malicious code patterns.
+6. **Compile-time validation**: Schema validation, expression allowlisting, action pinning, and security scanners reject misconfigurations before deployment. Running `gh aw validate --strict` and `gh aw compile` enforces this layer locally before any workflow reaches the runner.
 
 Professional use starts by assuming prompts, tools, and repository content can be adversarial or misleading.
 
@@ -119,9 +120,9 @@ Use these signals:
 5. Threat-detection outcomes.
 6. Safe-output previews versus actual writes.
 
-Cost control starts with visibility: use `gh aw logs` and `gh aw audit` to find runs consuming the most time, tokens, and AI Credits, then tighten prompts, triggers, and model choices before spend drifts upward. Set `max-ai-credits:` in frontmatter to cap the AI Credits a single run may consume. See [https://github.github.com/gh-aw/reference/cost-management/](https://github.github.com/gh-aw/reference/cost-management/) for the full cost-management reference.
+Cost control starts with visibility: use `gh aw logs` and `gh aw audit` to find runs consuming the most time, tokens, and AI Credits, then tighten prompts, triggers, and model choices before spend drifts upward. Set `max-ai-credits:` in frontmatter to cap the AI Credits a single run may consume. For optimization over time, compare cost with outcomes so lower spend still produces useful accepted results. See [https://github.github.com/gh-aw/reference/cost-management/](https://github.github.com/gh-aw/reference/cost-management/) for the full cost-management reference and [https://github.github.com/gh-aw/reference/outcomes/](https://github.github.com/gh-aw/reference/outcomes/) for outcome tracking.
 
-GH-AW supports OpenTelemetry export: workflow traces and token data can be exported to OTLP backends for dashboards, alerting, and spend analysis. See [https://github.github.com/gh-aw/reference/open-telemetry/](https://github.github.com/gh-aw/reference/open-telemetry/).
+GH-AW supports OpenTelemetry export: workflow traces and token data can be exported to OTLP backends for dashboards, alerting, and spend analysis. See [https://github.github.com/gh-aw/guides/open-telemetry/](https://github.github.com/gh-aw/guides/open-telemetry/).
 
 ## Operational Hygiene
 
