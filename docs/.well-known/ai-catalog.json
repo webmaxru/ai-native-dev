@@ -214,7 +214,7 @@
         "handling agent-invoked form flows",
         "validating WebMCP behavior in the current Chrome preview"
       ],
-      "version": "1.3",
+      "version": "1.4",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",
