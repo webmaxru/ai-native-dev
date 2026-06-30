@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-30T21:17:19.193Z",
+  "generatedAt": "2026-06-30T21:17:50.465Z",
   "totalSkills": 19,
   "plugins": [
     {
@@ -15,7 +15,7 @@
           "dirName": "agent-package-manager",
           "description": "Installs, configures, audits, and operates Agent Package Manager (APM) in repositories. Use when initializing apm.yml, installing or updating packages, validating manifests, managing lockfiles, compiling agent context, browsing MCP servers, setting up runtimes, or packaging resolved context for CI and team distribution. Don't use for writing a single skill by hand, generic package managers like npm or pip, or non-APM agent configuration systems.",
           "shortDescription": "Installs, configures, audits, and operates Agent Package Manager (APM) in repositories.",
-          "version": "1.6",
+          "version": "1.7",
           "author": "webmaxru",
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/ai-native-dev/tree/main/skills/agent-package-manager",
