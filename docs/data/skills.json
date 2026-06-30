@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-30T14:44:26.293Z",
+  "generatedAt": "2026-06-30T20:17:13.535Z",
   "totalSkills": 19,
   "plugins": [
     {
@@ -113,7 +113,7 @@
           "dirName": "webmcp",
           "description": "Implements and debugs browser WebMCP integrations in JavaScript or TypeScript web apps. Use when exposing imperative tools through document.modelContext (with a navigator.modelContext fallback), annotating HTML forms for declarative tools, handling agent-invoked form flows, or validating WebMCP behavior in the current Chrome preview. Don't use for server-side MCP servers, REST tool backends, or non-browser providers.",
           "shortDescription": "Implements and debugs browser WebMCP integrations in JavaScript or TypeScript web apps.",
-          "version": "1.4",
+          "version": "1.5",
           "author": "webmaxru",
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/web-ai-agent-skills/tree/main/skills/webmcp",
