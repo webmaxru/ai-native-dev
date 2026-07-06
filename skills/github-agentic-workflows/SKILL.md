@@ -4,7 +4,7 @@ description: Authors, reviews, installs, and debugs GitHub Agentic Workflows in 
 license: MIT
 metadata:
   author: webmaxru
-  version: "1.5"
+  version: "1.6"
 ---
 
 # GitHub Agentic Workflows
