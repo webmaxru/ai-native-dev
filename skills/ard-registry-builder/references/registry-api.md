@@ -39,7 +39,7 @@ must exist regardless.
 
 ## POST /search (required)
 Request adds root-level `federation` (`auto` default / `referrals` / `none`), `pageSize`
-(default 10, max 100), `pageToken`.
+(default 10), `pageToken`.
 
 Response envelope:
 ```json
@@ -121,6 +121,6 @@ as a cross-check.
 
 ## Discovering a registry's base URL
 Inside a static manifest, a dynamic registry advertises itself as an entry of type
-`application/ai-registry+json` whose `url` is the API base. Clients read that `url` and then
-call `POST {base}/search`. DNS `SRV` records under `_search._agents.<domain>` are an
-alternative discovery path.
+`application/ai-registry+json` (or the shorter `application/ai-registry`) whose `url` is the
+API base. Clients read that `url` and then call `POST {base}/search`. DNS `SRV` records under
+`_search._agents.<domain>` are an alternative discovery path.
