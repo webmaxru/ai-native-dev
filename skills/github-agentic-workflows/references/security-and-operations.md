@@ -35,7 +35,7 @@ Key points:
 
 1. The agent runs read-only and emits a structured artifact describing its intended actions.
 2. Before any output is applied, a dedicated threat detection job runs an AI-powered scan of the agent's proposed changes. It checks for prompt injection attacks, leaked credentials, and malicious code patterns. If anything looks suspicious, the workflow fails immediately and nothing is written to the repository.
-3. After the threat detection gate, a separate job with scoped write permissions applies only what the workflow explicitly permits: hard limits per operation (such as a maximum of one issue per run), required title prefixes, and label constraints. The agent requests; a gated job decides.
+3. After the threat detection gate, a separate job with scoped write permissions applies only what the workflow explicitly permits: hard limits per operation (such as a maximum of one issue per run), required title prefixes, and label constraints. The agent requests; a gated job decides. See [https://github.github.com/gh-aw/reference/threat-detection/](https://github.github.com/gh-aw/reference/threat-detection/) for the full threat-detection reference.
 4. Common outputs include `create-issue`, `add-comment`, `add-labels`, `create-pull-request`, `dispatch-workflow`, `call-workflow`, `assign-to-agent`, and `create-agent-session`.
 5. `noop`, `missing-tool`, and `missing-data` are critical truthfulness and reliability tools.
 6. `staged: true` is the safest rollout mode for new write-heavy workflows.
