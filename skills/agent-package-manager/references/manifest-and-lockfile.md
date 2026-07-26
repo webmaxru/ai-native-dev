@@ -98,7 +98,12 @@ Operational consequences:
 
 ## Policy governance
 
-`apm-policy.yml` is an optional file that applies install-time policy, including transitive MCP server gating. Inheritance flows enterprise → org → repo and is tighten-only (a downstream policy can only add restrictions, never relax them).
+APM enforces two layers of MCP server security:
+
+1. **Default behavior (no configuration needed):** `apm install` blocks transitive MCP servers by default — any MCP server introduced by a package dependency but not explicitly listed in `dependencies.mcp` is blocked before it reaches disk. No opt-in is required.
+2. **Policy layer (optional, org-level):** `apm-policy.yml` can add further restrictions on top of the default block, such as limiting which MCP registries or dependency sources are allowed.
+
+`apm-policy.yml` inheritance flows enterprise → org → repo and is tighten-only (a downstream policy can only add restrictions, never relax them).
 
 Key points:
 * Policy is enforced automatically at `apm install`; no extra command is needed.
