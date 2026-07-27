@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T06:39:34.055Z",
+  "generatedAt": "2026-07-27T09:56:49.699Z",
   "totalSkills": 19,
   "plugins": [
     {
@@ -48,7 +48,7 @@
           "dirName": "github-agentic-workflows",
           "description": "Authors, reviews, installs, and debugs GitHub Agentic Workflows in repositories, including workflow markdown, frontmatter, gh aw compile and run flows, safe outputs, security guardrails, and operational patterns. Use when creating or maintaining GH-AW automation. Don't use for standard deterministic GitHub Actions YAML, generic CI pipelines, or non-GitHub automation systems.",
           "shortDescription": "Authors, reviews, installs, and debugs GitHub Agentic Workflows in repositories, including workflow markdown, frontmatter, gh aw compile and run flows, safe outputs, security guardrails, and operational patterns.",
-          "version": "1.5",
+          "version": "1.6",
           "author": "webmaxru",
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/ai-native-dev/tree/main/skills/github-agentic-workflows",
@@ -69,7 +69,7 @@
           "dirName": "language-detector-api",
           "description": "Implements and debugs browser Language Detector API integrations in JavaScript or TypeScript web apps. Use when adding LanguageDetector support checks, availability and model download flows, session creation, detect() calls, input-usage measurement, permissions-policy handling, or compatibility fallbacks for built-in language detection. Don't use for server-side language detection SDKs, cloud translation services, or generic NLP pipelines.",
           "shortDescription": "Implements and debugs browser Language Detector API integrations in JavaScript or TypeScript web apps.",
-          "version": "1.3",
+          "version": "1.4",
           "author": "webmaxru",
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/web-ai-agent-skills/tree/main/skills/language-detector-api",
@@ -91,7 +91,7 @@
           "dirName": "proofreader-api",
           "description": "Implements and debugs browser Proofreader API integrations in JavaScript or TypeScript web apps. Use when adding Proofreader availability checks, monitored model downloads, proofread flows, correction metadata handling, or permissions-policy checks for built-in proofreading. Don't use for generic prompt engineering, server-side LLM SDKs, or cloud AI services.",
           "shortDescription": "Implements and debugs browser Proofreader API integrations in JavaScript or TypeScript web apps.",
-          "version": "1.3",
+          "version": "1.4",
           "author": "webmaxru",
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/web-ai-agent-skills/tree/main/skills/proofreader-api",
