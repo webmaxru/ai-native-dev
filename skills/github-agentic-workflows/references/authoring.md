@@ -59,6 +59,8 @@ Useful frontmatter fields for professional workflows:
 7. `mcp:` when the workflow needs custom tools or integrations via Model Context Protocol servers.
 8. `max-ai-credits:` to cap the AI Credits (AIC) a single run may consume and prevent runaway inference spend.
 
+When selecting `toolsets:`, use the GitHub tools reference at `https://github.github.com/gh-aw/reference/github-tools/` to understand which toolsets expose which operations before committing to a minimal set.
+
 Practical default: use `engine: copilot` unless the repository explicitly needs another model provider and is already wired for that provider's secret and runtime expectations.
 
 ## Authoring Style
@@ -126,6 +128,7 @@ For authoring with agents:
 
 1. Use `gh aw init` to prepare the repository. For agent-assisted setup, use `https://raw.githubusercontent.com/github/gh-aw/main/install.md`.
 2. Use the debugging prompt at `https://raw.githubusercontent.com/github/gh-aw/main/debug.md` for failed runs.
-3. Use the planner or dictation prompts from the official docs when task shaping is the bottleneck rather than workflow syntax.
-4. Use the interactive workshop at `https://github.github.com/gh-aw/workshop/` for hands-on exercises that cover installation, authoring, and running agentic workflows end to end.
-5. If strict mode rejects external-source domains that are still required for the task, add deterministic pre-steps that fetch those sources to local files and instruct the agent to use the local copies.
+3. Use the official GH-AW agent file at `https://raw.githubusercontent.com/github/gh-aw/main/.github/aw/github-agentic-workflows.md` when the repository itself uses a coding agent for workflow authoring and needs the canonical authoring guidance in a form the agent can read directly.
+4. Use the planner or dictation prompts from the official docs when task shaping is the bottleneck rather than workflow syntax.
+5. Use the interactive workshop at `https://github.github.com/gh-aw/workshop/` for hands-on exercises that cover installation, authoring, and running agentic workflows end to end.
+6. If strict mode rejects external-source domains that are still required for the task, add deterministic pre-steps that fetch those sources to local files and instruct the agent to use the local copies.
