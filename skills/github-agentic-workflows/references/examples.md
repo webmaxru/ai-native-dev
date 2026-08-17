@@ -129,12 +129,12 @@ Review existing workflows against these questions:
 
 High-value workflow families from the GH-AW docs and gallery include:
 
-1. IssueOps and LabelOps.
+1. IssueOps and LabelOps — see `https://github.github.com/gh-aw/guides/ai-issue-triage/`.
 2. DailyOps and Monitoring.
-3. Continuous Documentation — documentation maintenance and consistency.
+3. Continuous Documentation — documentation maintenance and consistency. See `https://github.github.com/gh-aw/guides/docs-automation/`.
 4. Continuous Improvement — daily code simplification, refactoring, and style improvements.
-5. Quality and testing hygiene.
-6. Multi-repository coordination.
-7. ProjectOps and status reporting.
+5. Quality and testing hygiene — see `https://github.github.com/gh-aw/guides/automated-pr-review/`.
+6. Multi-repository coordination — see `https://github.github.com/gh-aw/examples/multi-repo/`.
+7. ProjectOps and status reporting — see `https://github.github.com/gh-aw/guides/ai-release-notes/`.
 8. Orchestration and task delegation.
 9. Assign-to-Copilot or create-agent-session follow-up automation.
