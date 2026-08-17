@@ -69,9 +69,9 @@ Schema pattern: `^urn:air:[a-zA-Z0-9.-]+(:[a-zA-Z0-9._-]+)+$`
 Publisher guidance by context (see `urn-naming-guide` in the spec for full rationale):
 - **Enterprise / own domain** → use the real FQDN everywhere (`urn:air:acme.com:finance:tax`),
   even locally; only the `url` changes between dev and prod.
-- **Solo dev, public** → anchor to a namespace you control: `gitlab.com:you:tool`,
-  `npmjs.com:you:tool`, `pypi.org:you:tool`, `you.github.io:tool`, `you.vercel.app:tool`,
-  `you.netlify.app:tool`.
+- **Solo dev, public** → anchor to a namespace you control: `hf.co:you:tool` (HuggingFace),
+  `github.com:you:tool`, `gitlab.com:you:tool`, `npmjs.com:you:tool`, `pypi.org:you:tool`,
+  `you.github.io:tool`, `you.vercel.app:tool`, `you.netlify.app:tool`.
 - **Local / private only** → use a reserved placeholder FQDN: `agent.localhost` or
   `example.com`. Never use bare `localhost` as the publisher — it is not globally unique or
   verifiable and breaks federation.
