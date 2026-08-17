@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T17:50:48.120Z",
+  "generatedAt": "2026-08-17T18:01:13.675Z",
   "totalSkills": 19,
   "plugins": [
     {
@@ -48,7 +48,7 @@
           "dirName": "github-agentic-workflows",
           "description": "Authors, reviews, installs, and debugs GitHub Agentic Workflows in repositories, including workflow markdown, frontmatter, gh aw compile and run flows, safe outputs, security guardrails, and operational patterns. Use when creating or maintaining GH-AW automation. Don't use for standard deterministic GitHub Actions YAML, generic CI pipelines, or non-GitHub automation systems.",
           "shortDescription": "Authors, reviews, installs, and debugs GitHub Agentic Workflows in repositories, including workflow markdown, frontmatter, gh aw compile and run flows, safe outputs, security guardrails, and operational patterns.",
-          "version": "1.6",
+          "version": "1.7",
           "author": "webmaxru",
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/ai-native-dev/tree/main/skills/github-agentic-workflows",
