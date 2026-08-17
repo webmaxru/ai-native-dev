@@ -122,5 +122,5 @@ as a cross-check.
 ## Discovering a registry's base URL
 Inside a static manifest, a dynamic registry advertises itself as an entry of type
 `application/ai-registry+json` (or the shorter `application/ai-registry`) whose `url` is the
-API base. Clients read that `url` and then call `POST {base}/search`. DNS `SRV` records under
-`_search._agents.<domain>` are an alternative discovery path.
+API base. Clients read that `url` and then call `POST {base}/search`. DNS **SVCB** records under
+`_index._agents.<domain>` are an alternative discovery path (see `references/publishing.md`).
