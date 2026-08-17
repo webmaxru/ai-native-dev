@@ -49,7 +49,7 @@ metadata:
 1. Read `references/authoring.md` before first-time repository setup.
 2. Run `gh aw init` when the repository is not configured for GH-AW authoring and the user wants persistent setup.
 3. Configure engine secrets with `gh aw secrets bootstrap` or `gh aw secrets set`.
-4. Use `COPILOT_GITHUB_TOKEN` for Copilot engine authentication.
+4. Use `COPILOT_GITHUB_TOKEN` or the `copilot-requests` Actions permission for Copilot engine authentication.
 5. For Copilot runs, use a fine-grained PAT in `COPILOT_GITHUB_TOKEN`; a general `gho_...` OAuth token may pass secret checks but still fail real Copilot execution.
 6. When using `gh aw trial`, verify that the host repository also has the required engine secret. Secrets from the logical or source repository are not copied automatically into the temporary or reusable host repo.
 7. Re-check `gh aw version` after extension upgrades or reinstall paths so the repository guidance and compiler behavior stay aligned.
