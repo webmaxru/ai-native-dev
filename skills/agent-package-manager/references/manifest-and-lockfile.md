@@ -114,6 +114,7 @@ Key points:
 
 Use the official APM docs in this order when deeper details are needed:
 
+* Targets matrix (harness support): `https://microsoft.github.io/apm/reference/targets-matrix/`
 * Quick start: `https://microsoft.github.io/apm/quickstart/`
 * CLI commands: `https://microsoft.github.io/apm/reference/cli-commands/`
 * Manifest schema: `https://microsoft.github.io/apm/reference/manifest-schema/`

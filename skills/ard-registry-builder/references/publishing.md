@@ -20,12 +20,16 @@ Publishers can surface the manifest through any of:
 - **Well-Known URI** — the default above; nothing else needed if you can host there.
 - **Agentmap directive** in `robots.txt`: `Agentmap: https://example.com/ai-catalog.json`.
 - **HTML `<link>`** in a page `<head>`: `<link rel="ai-catalog" href="https://example.com/ai-catalog.json">`.
-- **DNS records** when you cannot use the well-known path:
+- **DNS records** when you cannot use the well-known path — use SVCB records
+  (TXT is a supported fallback):
 
-| Name / Host | Type | Value |
+| Name / Host | Type | Notes |
 | :-- | :-- | :-- |
-| `_catalog._agents.<domain>` | `TXT` | `"url=https://bucket.s3.amazonaws.com/ai-catalog.json"` |
-| `_search._agents.<domain>` | `SRV` | port `443`, target `search.<domain>` (for a dynamic registry endpoint) |
+| `{agent-name}.<domain>` | `SVCB` | Points to the manifest path, e.g. `well-known=/not-well-known/ai-catalog.json`. |
+| `_index._agents.<domain>` | `SVCB` | Points to a dynamic registry search endpoint. |
+| `_catalog._agents.<domain>` | `TXT` (fallback) | `"url=https://..."` — use when SVCB is unsupported. |
+
+  See [DNS-AID](https://datatracker.ietf.org/doc/html/draft-mozleywilliams-dnsop-dnsaid) for the full SVCB record specification.
 
 ## Step 3 — Verify what you published
 Re-run validation against the **live URL**, not just the local file, to catch hosting issues
