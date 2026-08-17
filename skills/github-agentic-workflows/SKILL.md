@@ -4,7 +4,7 @@ description: Authors, reviews, installs, and debugs GitHub Agentic Workflows in 
 license: MIT
 metadata:
   author: webmaxru
-  version: "1.6"
+  version: "1.7"
 ---
 
 # GitHub Agentic Workflows
@@ -33,7 +33,7 @@ metadata:
 5. Prefer `safe-outputs:` for comments, issues, labels, PRs, agent assignment, and orchestration instead of granting direct write access to the agent.
 6. In safe-output workflows, instruct the agent to call `noop` when no action is required.
 7. Keep `tools:` and `toolsets:` minimal and specific to the task.
-8. Default to `engine: copilot` unless the task explicitly requires another engine and the repository is already prepared for that engine's authentication model.
+8. Default to `engine: copilot` unless the task explicitly requires another engine and the repository is already prepared for that engine's authentication model. Use `engine: pi` for experimental multi-provider routing or `copilot-sdk: true` for Copilot SDK mode. Third-party engines (cursor, kiro, aider, mods) are importable via `gh aw add`.
 9. Configure `network:` with least privilege. Prefer ecosystem identifiers such as `node`, `python`, or `github` over individual registry domains when the compiler supports them.
 10. Set `max-ai-credits:` when the workflow runs on a schedule or could trigger large agent turns, to cap per-run AI Credits (AIC) spend before it drifts upward.
 11. If strict mode and the installed CLI reject custom domains that the workflow still needs, prefetch external sources in deterministic setup steps and pass local files into the agent instead of broadly relaxing the firewall.
@@ -49,7 +49,7 @@ metadata:
 1. Read `references/authoring.md` before first-time repository setup.
 2. Run `gh aw init` when the repository is not configured for GH-AW authoring and the user wants persistent setup.
 3. Configure engine secrets with `gh aw secrets bootstrap` or `gh aw secrets set`.
-4. Use `COPILOT_GITHUB_TOKEN` for Copilot engine authentication.
+4. Use `COPILOT_GITHUB_TOKEN` or the `copilot-requests` Actions permission for Copilot engine authentication.
 5. For Copilot runs, use a fine-grained PAT in `COPILOT_GITHUB_TOKEN`; a general `gho_...` OAuth token may pass secret checks but still fail real Copilot execution.
 6. When using `gh aw trial`, verify that the host repository also has the required engine secret. Secrets from the logical or source repository are not copied automatically into the temporary or reusable host repo.
 7. Re-check `gh aw version` after extension upgrades or reinstall paths so the repository guidance and compiler behavior stay aligned.

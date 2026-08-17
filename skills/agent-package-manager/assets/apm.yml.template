@@ -20,6 +20,7 @@ dependencies:
     - github/awesome-copilot/agents/api-architect.agent.md
   mcp:
     - io.github.github/github-mcp-server
+    - io.github.microsoft/playwright-mcp
 
 compilation:
   target: all
