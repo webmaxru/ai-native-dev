@@ -75,10 +75,11 @@ Guidance:
 
 Engine authentication:
 
-1. Copilot: `COPILOT_GITHUB_TOKEN`.
+1. Copilot: `COPILOT_GITHUB_TOKEN` (fine-grained PAT) or the `copilot-requests` Actions permission.
 2. Claude: `ANTHROPIC_API_KEY`.
 3. Codex: `OPENAI_API_KEY`.
 4. Gemini: `GEMINI_API_KEY`.
+5. Pi: refer to the Pi engine documentation for the required secret.
 
 Additional authentication is usually required for:
 
@@ -87,7 +88,7 @@ Additional authentication is usually required for:
 3. Remote GitHub tool mode.
 4. Assigning Copilot or creating advanced safe outputs.
 
-Use a GitHub App when possible for short-lived, scoped tokens. Copilot engine authentication itself still requires a PAT.
+Use a GitHub App when possible for short-lived, scoped tokens. Copilot engine authentication accepts either a fine-grained PAT in `COPILOT_GITHUB_TOKEN` or the `copilot-requests` permission when running in supported GitHub Actions contexts.
 
 ## Public Repository Safety
 

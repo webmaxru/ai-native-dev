@@ -61,6 +61,8 @@ Useful frontmatter fields for professional workflows:
 
 Practical default: use `engine: copilot` unless the repository explicitly needs another model provider and is already wired for that provider's secret and runtime expectations.
 
+Supported built-in engines: GitHub Copilot, Claude Code, OpenAI Codex, Google Gemini, and Pi. To use the Copilot SDK as the inference layer instead of a separate AI engine, set `copilot-sdk: true` in the engine configuration.
+
 ## Authoring Style
 
 Keep the markdown body direct and constrained.
