@@ -27,6 +27,16 @@ gh aw secrets bootstrap
 
 Before relying on any field, command, or compiler behavior from memory, check the installed version with `gh aw version`. The repository may lag or exceed the version described in older notes, and that version drift can change frontmatter support, generated lockfiles, and validation output.
 
+## Runner Options
+
+GH-AW supports multiple runner types:
+
+1. **GitHub-hosted runners** (default): standard Actions Linux runners.
+2. **Self-hosted runners and ARC**: deploy on Linux self-hosted runners, including Actions Runner Controller (ARC) with Docker-in-Docker.
+3. **MicroVM isolation**: on compatible runners, agents execute inside KVM-isolated Docker sbx microVMs for stronger sandbox boundaries.
+
+Use self-hosted or ARC runners when the repository needs custom toolchains, private network access, or tighter hardware controls. MicroVM isolation is available on compatible self-hosted runners and adds an extra containment layer beyond the standard network firewall.
+
 ## Creation Paths
 
 Choose the creation path that matches the working mode:
@@ -58,6 +68,20 @@ Useful frontmatter fields for professional workflows:
 6. `concurrency`, `timeout-minutes`, and `max-ai-credits` for operational and cost control.
 7. `mcp:` when the workflow needs custom tools or integrations via Model Context Protocol servers.
 8. `max-ai-credits:` to cap the AI Credits (AIC) a single run may consume and prevent runaway inference spend.
+
+Built-in engines and their activation keys:
+
+| Engine | Frontmatter | Secret Required |
+|--------|-------------|-----------------|
+| GitHub Copilot | `engine: copilot` (default) | `COPILOT_GITHUB_TOKEN` |
+| Claude Code | `engine: claude` | `ANTHROPIC_API_KEY` |
+| OpenAI Codex | `engine: codex` | `OPENAI_API_KEY` |
+| Google Gemini | `engine: gemini` | `GEMINI_API_KEY` |
+| Multi-provider Pi | `engine: pi` | `COPILOT_GITHUB_TOKEN` |
+
+`engine: pi` is an experimental multi-provider agent. Use `copilot-sdk: true` alongside `engine: copilot` to activate Copilot SDK mode for advanced multi-provider routing.
+
+Third-party engines such as `cursor`, `kiro`, `aider`, and `mods` (Charmbracelet) are available as importable shared engine definitions. Use `gh aw add` with the engine's publisher-maintained definition repository to import them. The built-in engine list above covers the common cases.
 
 Practical default: use `engine: copilot` unless the repository explicitly needs another model provider and is already wired for that provider's secret and runtime expectations.
 
@@ -126,6 +150,7 @@ For authoring with agents:
 
 1. Use `gh aw init` to prepare the repository. For agent-assisted setup, use `https://raw.githubusercontent.com/github/gh-aw/main/install.md`.
 2. Use the debugging prompt at `https://raw.githubusercontent.com/github/gh-aw/main/debug.md` for failed runs.
-3. Use the planner or dictation prompts from the official docs when task shaping is the bottleneck rather than workflow syntax.
-4. Use the interactive workshop at `https://github.github.com/gh-aw/workshop/` for hands-on exercises that cover installation, authoring, and running agentic workflows end to end.
-5. If strict mode rejects external-source domains that are still required for the task, add deterministic pre-steps that fetch those sources to local files and instruct the agent to use the local copies.
+3. Use the official GH-AW agent file at `https://raw.githubusercontent.com/github/gh-aw/main/.github/aw/github-agentic-workflows.md` when the repository itself uses a coding agent for workflow authoring and needs the canonical authoring guidance in a form the agent can read directly.
+4. Use the planner or dictation prompts from the official docs when task shaping is the bottleneck rather than workflow syntax.
+5. Use the interactive workshop at `https://github.github.com/gh-aw/workshop/` for hands-on exercises that cover installation, authoring, and running agentic workflows end to end.
+6. If strict mode rejects external-source domains that are still required for the task, add deterministic pre-steps that fetch those sources to local files and instruct the agent to use the local copies.

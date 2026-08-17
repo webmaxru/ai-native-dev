@@ -9,9 +9,10 @@ GitHub Agentic Workflows uses six named security layers that work together to co
 1. **Read-only tokens**: The agent receives a GitHub token scoped to read-only permissions. Even if the agent attempts to create a pull request, push code, or delete a file, the underlying token does not allow it.
 2. **Zero secrets in the agent**: The agent process never receives write tokens, API keys, or other sensitive credentials. Those secrets exist only in separate, isolated jobs that run after the agent has finished and its output has passed review.
 3. **Network firewall**: The agent runs inside an isolated container. The Agent Workflow Firewall (AWF) routes all outbound traffic through a Squid proxy that enforces an explicit domain allowlist. Traffic to any other destination is dropped at the kernel level.
-4. **Safe outputs**: The agent cannot write to GitHub directly. It produces a structured artifact describing its intended actions. A separate job with scoped write permissions reads that artifact and applies only what the workflow explicitly permits.
-5. **Agentic threat detection**: Before any output is applied, a dedicated threat detection job runs an AI-powered scan of the agent's proposed changes, checking for prompt injection, leaked credentials, and malicious code patterns.
-6. **Compile-time validation**: Schema validation, expression allowlisting, action pinning, and security scanners reject misconfigurations before deployment. Running `gh aw validate --strict` and `gh aw compile` enforces this layer locally before any workflow reaches the runner.
+4. **MicroVM isolation**: On compatible self-hosted runners, agents execute inside KVM-isolated Docker sbx microVMs, adding an extra containment boundary beyond the network firewall and sandboxed container.
+5. **Safe outputs**: The agent cannot write to GitHub directly. It produces a structured artifact describing its intended actions. A separate job with scoped write permissions reads that artifact and applies only what the workflow explicitly permits.
+6. **Agentic threat detection**: Before any output is applied, a dedicated threat detection job runs an AI-powered scan of the agent's proposed changes, checking for prompt injection, leaked credentials, and malicious code patterns.
+7. **Compile-time validation**: Schema validation, expression allowlisting, action pinning, and security scanners reject misconfigurations before deployment. Running `gh aw validate --strict` and `gh aw compile` enforces this layer locally before any workflow reaches the runner.
 
 Professional use starts by assuming prompts, tools, and repository content can be adversarial or misleading.
 
@@ -79,6 +80,8 @@ Engine authentication:
 2. Claude: `ANTHROPIC_API_KEY`.
 3. Codex: `OPENAI_API_KEY`.
 4. Gemini: `GEMINI_API_KEY`.
+5. Pi (multi-provider experimental): `COPILOT_GITHUB_TOKEN`.
+6. Third-party importable engines (cursor, kiro, aider, mods): see the publisher-maintained engine definition for required secrets.
 
 Additional authentication is usually required for:
 
