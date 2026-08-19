@@ -23,7 +23,7 @@
         "managing lockfiles",
         "compiling agent context"
       ],
-      "version": "1.7",
+      "version": "1.8",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",
@@ -72,7 +72,7 @@
         "urn:air: identifiers",
         "trustManifest/attestations"
       ],
-      "version": "1.2",
+      "version": "1.3",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",
@@ -91,7 +91,7 @@
         "agentic",
         "workflows"
       ],
-      "version": "1.7",
+      "version": "1.8",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",
@@ -117,7 +117,7 @@
         "detect() calls",
         "input-usage measurement"
       ],
-      "version": "1.4",
+      "version": "1.5",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",
@@ -142,7 +142,7 @@
         "structured output",
         "download progress UX"
       ],
-      "version": "1.3",
+      "version": "1.4",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",
@@ -214,7 +214,7 @@
         "handling agent-invoked form flows",
         "validating WebMCP behavior in the current Chrome preview"
       ],
-      "version": "1.5",
+      "version": "1.6",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",
@@ -238,7 +238,7 @@
         "device selection",
         "tensor dispatch and readback"
       ],
-      "version": "1.3",
+      "version": "1.4",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",
@@ -264,7 +264,7 @@
         "summarize or write or rewrite flows",
         "streaming output"
       ],
-      "version": "1.3",
+      "version": "1.4",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",
