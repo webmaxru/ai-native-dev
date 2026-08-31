@@ -81,7 +81,7 @@ Built-in engines and their activation keys:
 
 `engine: pi` is an experimental multi-provider agent. Use `copilot-sdk: true` alongside `engine: copilot` to activate Copilot SDK mode for advanced multi-provider routing.
 
-Third-party engines such as `cursor`, `kiro`, `aider`, and `mods` (Charmbracelet) are available as importable shared engine definitions. Use `gh aw add` with the engine's publisher-maintained definition repository to import them. The built-in engine list above covers the common cases.
+Third-party engines such as `cursor`, `kiro`, `aider`, `crush` (Charmbracelet), and `opencode` (provider-agnostic BYOK supporting 75+ models) are available as importable shared engine definitions. Use `gh aw add` with the engine's publisher-maintained definition repository to import them. The built-in engine list above covers the common cases.
 
 Practical default: use `engine: copilot` unless the repository explicitly needs another model provider and is already wired for that provider's secret and runtime expectations.
 
