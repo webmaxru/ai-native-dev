@@ -54,10 +54,14 @@ Response envelope:
   "pageToken": "..."
 }
 ```
-Each result is a **catalog entry** (same shape as in a manifest) plus two required fields:
+Each result is a **catalog entry shape** plus two required fields:
 - `score` — integer 0–100, semantic relevance only. Clients **MUST NOT** read it as trust,
   compliance, or safety. Verify trust separately via `trustManifest`.
 - `source` — base URL of the registry that indexed the entry.
+
+Note: In a search result, only `identifier` is required by the v0.91 spec (§5.3.2). The
+registry MAY omit `displayName`, `type`, `url`, and other terms to return a minimal projection.
+Clients must not assume a full catalog entry in every result.
 
 `referrals` appears only in `referrals` federation mode.
 
@@ -91,6 +95,9 @@ For the `query.filter` object (search/explore):
   a constraint matches if any element satisfies it.
 - Any present attribute MAY be a filter key (including `metadata.*` and Schema.org fields). A
   registry MAY reject an unsupported field path with `400`.
+- An optional `@context` key in the query object (IRI, object, or array) declares additional
+  JSON-LD namespaces; prefixed filter keys are resolved to IRIs through this effective context
+  so namespaced terms filter consistently across publishers.
 
 ## Federation
 The client controls topology via `federation`:

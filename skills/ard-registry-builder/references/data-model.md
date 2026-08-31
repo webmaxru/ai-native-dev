@@ -24,13 +24,18 @@ never treat a URL as an identity.
 
 ## Manifest structure
 A publisher hosts one JSON document, conventionally at
-`https://<domain>/.well-known/ai-catalog.json`.
+`https://<domain>/.well-known/ard.json` (ARD v0.91+ primary path; the predecessor
+`/.well-known/ai-catalog.json` remains a consumer fallback).
 
 | Field | Required | Notes |
 | :-- | :-- | :-- |
-| `specVersion` | yes | Must be the string `"1.0"`. |
+| `specVersion` | no¹ | When present, must be the string `"1.0"`. |
 | `host` | no | Describes the operator (see below). |
 | `entries` | yes | Array of catalog entries. The spec expects at least one (the validator warns on empty). |
+
+¹ ARD v0.91 `ArdManifest` requires only `entries`; any other top-level members are
+transport-defined and ignored by ARD. The older `ai-catalog.schema.json` still requires
+`specVersion`; `"1.0"` remains the correct value when it is present.
 
 `host` object: `displayName` (required when `host` is present), optional `identifier`
 (a verifiable id such as `did:web:acme.com`), `documentationUrl`, `logoUrl`, `trustManifest`.
@@ -44,8 +49,10 @@ Required: `identifier`, `displayName`, `type`, **and exactly one of** `url` or `
 
 Optional: `description`, `tags` (array), `capabilities` (array of skill/tool names for fast
 filtering), `representativeQueries` (2–5 natural-language samples used to build semantic search
-ranking), `version`, `updatedAt` (ISO 8601 date-time), `metadata` (map of scalar values),
-`trustManifest`.
+ranking — RECOMMENDED; absence is a conformance **WARN** in v0.91, not an error), `version`,
+`updatedAt` (ISO 8601 date-time), `metadata` (map of scalar values), `trustManifest`.
+Optional JSON-LD fields: `@context` (IRI, object, or array) to declare additional namespaces
+whose prefixed terms become filterable dimensions; `@id` (same resource as `identifier`).
 
 `representativeQueries` is the single highest-leverage optional field for discoverability:
 registries embed these 2–5 phrases to match user intent. Add them to anything you want found.
@@ -109,18 +116,22 @@ ARD *communicates* trust evidence; it never confers trust — clients verify ind
 | Field | Required | Notes |
 | :-- | :-- | :-- |
 | `identity` | yes | Cryptographic principal: SPIFFE ID, `did:web`, or HTTPS URI. Its domain SHOULD align with the URN publisher. |
-| `identityType` | no | `spiffe` / `did` / `https` / `other`. |
-| `trustSchema` | no | Describes the trust framework applied: requires `identifier` (URN of the framework) and `version`; optional `governanceUri` and `verificationMethods[]`. Present in the JSON Schema but not in the CDDL — a known doc inconsistency; follow the JSON Schema. |
-| `attestations[]` | no | Each requires `type`, `uri`, **`mediaType`**; optional `digest` (sha256). |
+| `identityType` | no | Free string hint: `spiffe` / `did` / `https` / `other`. |
+| `trustSchema` | no | Describes the trust framework applied: requires `identifier` (URN of the framework) and `version`; optional `governanceUri` and `verificationMethods[]`. |
+| `attestations[]` | no | Each requires `type` and `uri`; `mediaType` is **optional** in v0.91 (was required in ai-catalog.schema.json); optional `digest` (sha256). |
 | `provenance[]` | no | Each requires `relation` (`derivedFrom`/`publishedFrom`/`copiedFrom`) and `sourceId`; optional `sourceDigest`. |
 | `signature` | no | Detached JWS over the trust manifest. |
 
-Note: `mediaType` on each attestation is **required** by the schema and CDDL even though the
-prose table in `ard.md §5.2` omits it. Follow the schema.
+Note: The `ard-entry.schema.json` (v0.91) uses `additionalProperties: true` on TrustManifest —
+any framework-specific fields are structurally valid. The `ai-catalog.schema.json` remains the
+stricter reference for manifest-level validation.
 
 ## Known doc inconsistencies
-The bundled docs disagree in a few places. The validator treats the **schema + `ard.md` spec**
-as authoritative:
+Two schemas now exist: `ai-catalog.schema.json` (manifest-level, stricter) and
+`ard-entry.schema.json` (entry-level, more permissive — the v0.91 canonical form). When the
+two disagree, the **ard-entry.schema.json + ard.md spec** is authoritative for new authoring;
+`ai-catalog.schema.json` remains the reference for manifests that use `specVersion: "1.0"`.
+
 - URN NID: spec/schema use `urn:air:`; some website pages show `urn:ai:`. Use **`urn:air:`**.
 - MCP type: spec/schema show `application/mcp-server-card+json`; some pages show
   `application/mcp-server+json`. Both appear in the wild; the validator accepts any media type

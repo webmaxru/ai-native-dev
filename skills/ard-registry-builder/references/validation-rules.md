@@ -16,7 +16,7 @@ Severity model: **ERROR** blocks (exit 1). **WARN** is advisory (exit 0, unless 
 
 | code | Rule |
 | :-- | :-- |
-| `schema` | Any structural violation: missing `specVersion`/`entries`/`identifier`/`displayName`/`type`, wrong types, `representativeQueries` not 2–5, attestation missing `type`/`uri`/`mediaType`, unknown keys where `additionalProperties:false`, etc. |
+| `schema` | Any structural violation: missing `specVersion`/`entries`/`identifier`/`displayName`/`type`, wrong types, `representativeQueries` not 2–5 (when present), unknown keys where `additionalProperties:false`, etc. |
 | `urn-wrong-nid` | `identifier` starts with `urn:ai:` instead of `urn:air:`. The NID is `air`; `urn:ai:` (seen in some docs) is incorrect. |
 | `urn-format` | `identifier` does not match `^urn:air:[a-zA-Z0-9.-]+(:[a-zA-Z0-9._-]+)+$`. |
 | `value-or-reference` | Entry has **both** `url` and `data`, or **neither**. Exactly one is required (ARD §3.4). |
@@ -38,8 +38,13 @@ Severity model: **ERROR** blocks (exit 1). **WARN** is advisory (exit 0, unless 
 
 | code | Rule |
 | :-- | :-- |
-| `missing-representative-queries` | An agent/server entry has no `representativeQueries`. Adding 2–5 sample queries greatly improves semantic discoverability. |
 | `urn-no-namespace` | `identifier` has no `<namespace>` segment between publisher and agent-name. Allowed, but namespaces help organize larger catalogs. |
+
+## WARN-level (updated in v0.91)
+
+| code | Rule |
+| :-- | :-- |
+| `missing-representative-queries` | An agent/server entry has no `representativeQueries`. In ARD v0.91 this is a **WARN** (upgraded from INFO). Adding 2–5 sample queries greatly improves semantic discoverability; it is what distinguishes an ARD entry from a bare catalog entry. |
 
 ## Nested sub-catalogs
 When an entry has inline `data` and a `type` containing `ai-catalog`, the validator recurses
