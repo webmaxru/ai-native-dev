@@ -72,7 +72,7 @@
         "urn:air: identifiers",
         "trustManifest/attestations"
       ],
-      "version": "1.3",
+      "version": "1.4",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",
