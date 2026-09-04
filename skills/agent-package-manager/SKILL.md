@@ -4,7 +4,7 @@ description: Installs, configures, audits, and operates Agent Package Manager (A
 license: MIT
 metadata:
   author: webmaxru
-  version: "1.8"
+  version: "1.9"
 ---
 
 # Agent Package Manager
