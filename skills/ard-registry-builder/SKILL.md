@@ -13,7 +13,7 @@ description: >-
 license: MIT
 metadata:
   author: webmaxru
-  version: "1.3"
+  version: "1.4"
 ---
 
 # ARD Registry Builder
@@ -41,7 +41,8 @@ when present (recommended: `pip install jsonschema`) and falls back to a built-i
 | `scripts/validate_catalog.py <path-or-url> [--json] [--strict]` | Validate a manifest: JSON Schema **plus** ARD semantic rules. Exit 1 on errors. |
 | `scripts/test_registry.py <base-url> [--query T] [--json]` | Probe a live registry's `/search` (required), `/agents`, `/explore` for conformance. |
 | `scripts/new_catalog.py --template minimal\|enterprise\|local-dev [--publisher D] [--host N] --out F` | Scaffold a starter manifest. |
-| `assets/ai-catalog.schema.json` | The authoritative JSON Schema (Draft 2020-12), bundled for offline validation. |
+| `assets/ai-catalog.schema.json` | JSON Schema for the `ai-catalog.json` manifest format (Draft 2020-12), bundled for offline validation. |
+| `assets/ard-entry.schema.json` | JSON Schema for a standalone ARD entry and `ArdManifest` (the v0.91 `ard.json` format). Use this to validate entries individually or a bare-`entries` manifest. |
 | `assets/templates/*.json` | Valid starting points: `minimal`, `enterprise` (trust + registry entry), `local-dev`. |
 
 Always **validate after every edit**, and validate the **live URL** after publishing — not just
@@ -57,17 +58,18 @@ the local file.
 
 ## Workflow 1 — Build a manifest
 1. Pick the closest template and scaffold it:
-   `python scripts/new_catalog.py --template enterprise --publisher mycorp.com --host "MyCorp AI" --out ./ai-catalog.json`.
+   `python scripts/new_catalog.py --template enterprise --publisher mycorp.com --host "MyCorp AI" --out ./ard.json`.
    (Without scaffolding, copy a file from `assets/templates/`.)
 2. For each resource, set `identifier` (`urn:air:<publisher>:<namespace?>:<name>`),
    `displayName`, `type` (the artifact's media type), and **exactly one** of `url` or `data`.
-3. Add `description`, `tags`, `capabilities`, and especially `representativeQueries` (2–5) —
-   the single biggest lever for being found by semantic search.
+3. Add `description`, `tags`, `capabilities`, and especially `representativeQueries` (2–5
+   natural-language queries) — the single biggest lever for being found by semantic search.
+   Absence is a conformance warning in v0.91; presence is still strongly recommended.
 4. Add `trustManifest` only when you have real identity/attestations; keep simple entries lean.
 5. Choose the publisher domain to match the deployment context (enterprise FQDN, public
    namespace like `github.com:you`, or `agent.localhost`/`example.com` for local-only). See
    `references/data-model.md`.
-6. Validate: `python scripts/validate_catalog.py ./ai-catalog.json`. Fix until it passes.
+6. Validate: `python scripts/validate_catalog.py ./ard.json`. Fix until it passes.
 
 ## Workflow 2 — Validate / debug a manifest
 1. **Run the validator first**, before reading the file by hand — it pinpoints issues fast:
@@ -115,11 +117,11 @@ the local file.
 ## Reference files
 Read the one matching the task; each has a table of contents.
 - `references/data-model.md` — manifest/entry fields, URN format, media types, value-or-reference,
-  trust manifest, and the known `urn:air:` vs `urn:ai:` doc inconsistencies.
+  trust manifest, JSON-LD context extension, and the known `urn:air:` vs `urn:ai:` doc inconsistencies.
 - `references/registry-api.md` — `/search`, `/explore`, `/agents`, the query/filter model,
   federation modes, and error codes.
 - `references/validation-rules.md` — every check the validator runs, with its `code` and severity.
-- `references/publishing.md` — well-known URI, CORS, DNS discovery, and public reference
+- `references/publishing.md` — well-known URI (`ard.json`), CORS, DNS discovery, and public reference
   registries to test against.
 
 ## Evals
