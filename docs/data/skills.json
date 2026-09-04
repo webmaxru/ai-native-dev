@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-04T20:04:45.470Z",
+  "generatedAt": "2026-09-04T20:40:08.168Z",
   "totalSkills": 19,
   "plugins": [
     {
@@ -15,7 +15,7 @@
           "dirName": "agent-package-manager",
           "description": "Installs, configures, audits, and operates Agent Package Manager (APM) in repositories. Use when initializing apm.yml, installing or updating packages, validating manifests, managing lockfiles, compiling agent context, browsing MCP servers, setting up runtimes, or packaging resolved context for CI and team distribution. Don't use for writing a single skill by hand, generic package managers like npm or pip, or non-APM agent configuration systems.",
           "shortDescription": "Installs, configures, audits, and operates Agent Package Manager (APM) in repositories.",
-          "version": "1.8",
+          "version": "1.9",
           "author": "webmaxru",
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/ai-native-dev/tree/main/skills/agent-package-manager",
@@ -113,7 +113,7 @@
           "dirName": "webmcp",
           "description": "Implements and debugs browser WebMCP integrations in JavaScript or TypeScript web apps. Use when exposing imperative tools through document.modelContext (with a navigator.modelContext fallback), annotating HTML forms for declarative tools, handling agent-invoked form flows, or validating WebMCP behavior in the current Chrome preview. Don't use for server-side MCP servers, REST tool backends, or non-browser providers.",
           "shortDescription": "Implements and debugs browser WebMCP integrations in JavaScript or TypeScript web apps.",
-          "version": "1.6",
+          "version": "1.7",
           "author": "webmaxru",
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/web-ai-agent-skills/tree/main/skills/webmcp",
