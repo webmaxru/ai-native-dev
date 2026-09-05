@@ -23,7 +23,7 @@
         "managing lockfiles",
         "compiling agent context"
       ],
-      "version": "1.8",
+      "version": "1.9",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",
@@ -214,7 +214,7 @@
         "handling agent-invoked form flows",
         "validating WebMCP behavior in the current Chrome preview"
       ],
-      "version": "1.6",
+      "version": "1.7",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",
