@@ -41,7 +41,7 @@ The worker creates at most one draft PR per prompt, with the `skill-update` labe
    uses: webmaxru/ai-native-dev/.github/workflows/reusable-skill-update-supersede.yml@main
    ```
 
-4. Grant the worker call job `actions: read`, `contents: write`, `issues: write`, and `pull-requests: write`. Grant the supersede job `contents: write`, `issues: write`, and `pull-requests: write`. Keep the discovery job read-only.
+4. Use `main` as the target repository's default branch; the shared worker explicitly creates PRs against `main`. Grant the worker call job `actions: read`, `contents: write`, `issues: write`, and `pull-requests: write`. Grant the supersede job `contents: write`, `issues: write`, and `pull-requests: write`. Keep the discovery job read-only.
 5. Pass the Copilot token explicitly; personal-account repositories should not rely on `secrets: inherit`:
 
    ```yaml
@@ -49,7 +49,7 @@ The worker creates at most one draft PR per prompt, with the `skill-update` labe
      COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
    ```
 
-6. Configure `COPILOT_GITHUB_TOKEN` in the repository. No branch protection, PAT, or GitHub App secret is required for the weekly flow.
+6. Configure the required `COPILOT_GITHUB_TOKEN` secret in the repository. No additional PAT or GitHub App secret, branch protection, or app credential is required for the weekly flow.
 
 The hub repository calls its own reusable workflows with local `./.github/workflows/...` references. Roll out only after the hub's shared workflows are merged to `main`.
 

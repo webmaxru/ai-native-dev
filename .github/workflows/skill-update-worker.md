@@ -174,7 +174,7 @@ Read `.github/aw/skill-update-runtime.md` first, then execute the selected saved
 ## Pull Request Requirements
 
 - Keep the branch and PR scoped only to the selected prompt described in `.github/aw/skill-update-runtime.md`.
-- Use a concise PR title derived from the selected prompt slug in `.github/aw/skill-update-runtime.md`.
+- Use a PR title in the exact form `<prompt-slug>: <concise summary>`; the safe-output prefix adds `[skill-update] `.
 - Summarize the material deltas, validations run, and unresolved risks in the PR body.
 
 ## Constraints
