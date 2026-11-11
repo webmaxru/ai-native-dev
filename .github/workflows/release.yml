@@ -50,15 +50,53 @@ permissions:
 jobs:
   pull-request-preview:
     if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: read
-    uses: ./.github/workflows/reusable-skill-release.yml
-    with:
-      bump: auto
-      dry_run: true
-      debounce_minutes: 0
-      hub_ref: ${{ github.event.pull_request.head.repo.full_name == 'webmaxru/ai-native-dev' && github.event.pull_request.head.sha || 'main' }}
+    steps:
+      - name: Check out pull request content
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: target
+          fetch-depth: 0
+
+      - name: Check out release engine
+        uses: actions/checkout@v4
+        with:
+          repository: webmaxru/ai-native-dev
+          ref: ${{ github.event.pull_request.head.repo.full_name == 'webmaxru/ai-native-dev' && github.event.pull_request.head.sha || 'main' }}
+          path: hub
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Validate target content with trusted tooling
+        run: >-
+          python hub/scripts/validate-release-inputs.py
+          --target target
+          --validator hub/.github/skills/skill-creator/scripts/validate-metadata.py
+          --summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Preview release
+        working-directory: target
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          node ../hub/skills/agent-skill-deploy/scripts/deploy-auto.mjs --dry-run --json --bump auto | tee release-result.json
+          {
+            echo "## Automatic release preview"
+            echo
+            echo '```json'
+            cat release-result.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
   push-release:
     if: github.event_name == 'push' && vars.AUTO_RELEASE != 'false'
