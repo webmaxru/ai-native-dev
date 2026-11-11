@@ -10,13 +10,10 @@ on:
         required: false
         type: string
 
-permissions:
-  actions: read
-  contents: write
-  pull-requests: write
+permissions: {}
 
 concurrency:
-  group: weekly-skill-updates
+  group: weekly-skill-updates-${{ github.repository }}
   cancel-in-progress: false
 
 jobs:
@@ -29,7 +26,7 @@ jobs:
       prompt_count: ${{ steps.discover.outputs.prompt_count }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - id: discover
         name: Discover saved skill-update prompts
         env:
@@ -74,14 +71,140 @@ jobs:
           process.stdout.write(`prompt_count=${selectedPromptPaths.length}\n`);
           NODE
 
-  run-skill-update-prompts:
+  ensure-skill-update-label:
     needs: discover-prompts
     if: needs.discover-prompts.outputs.prompt_count != '0'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Ensure the skill-update label exists
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const labels = await github.paginate(github.rest.issues.listLabelsForRepo, {
+              owner,
+              repo,
+              per_page: 100,
+            });
+            if (labels.some((label) => label.name === 'skill-update')) {
+              core.info('The skill-update label already exists.');
+              return;
+            }
+
+            try {
+              await github.rest.issues.createLabel({
+                owner,
+                repo,
+                name: 'skill-update',
+                color: '5319e7',
+                description: 'Automated weekly skill updates',
+              });
+            } catch (error) {
+              if (error.status !== 422) throw error;
+              const { data: currentLabels } = await github.rest.issues.listLabelsForRepo({
+                owner,
+                repo,
+                per_page: 100,
+              });
+              if (!currentLabels.some((label) => label.name === 'skill-update')) throw error;
+            }
+
+  run-skill-update-prompts:
+    needs:
+      - discover-prompts
+      - ensure-skill-update-label
+    if: needs.discover-prompts.outputs.prompt_count != '0' && needs.ensure-skill-update-label.result == 'success'
     strategy:
       fail-fast: false
       matrix:
         prompt_path: ${{ fromJson(needs.discover-prompts.outputs.prompt_paths) }}
+    permissions:
+      actions: read
+      contents: write
+      issues: write
+      pull-requests: write
     uses: ./.github/workflows/skill-update-worker.lock.yml
     with:
       prompt_path: ${{ matrix.prompt_path }}
-    secrets: inherit
+    secrets:
+      COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
+
+  supersede-skill-update-prs:
+    needs:
+      - discover-prompts
+      - run-skill-update-prompts
+    if: always() && needs.discover-prompts.result == 'success'
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    uses: ./.github/workflows/reusable-skill-update-supersede.yml
+
+  report-skill-update-failure:
+    needs:
+      - discover-prompts
+      - ensure-skill-update-label
+      - run-skill-update-prompts
+      - supersede-skill-update-prs
+    if: >-
+      always() &&
+      (needs.discover-prompts.result == 'failure' ||
+       needs.ensure-skill-update-label.result == 'failure' ||
+       needs.run-skill-update-prompts.result == 'failure' ||
+       needs.supersede-skill-update-prs.result == 'failure')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Create or update the weekly failure issue
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        with:
+          script: |
+            const title = '[skill-update] failed weekly skill updates';
+            const marker = '<!-- skill-update-failure -->';
+            const { owner, repo } = context.repo;
+            const needs = JSON.parse(process.env.NEEDS_JSON);
+            const failures = Object.entries(needs)
+              .filter(([, job]) => job.result === 'failure')
+              .map(([name]) => `- \`${name}\` failed`);
+            const body = [
+              marker,
+              'The weekly skill-update workflow failed.',
+              '',
+              `Run: ${process.env.RUN_URL}`,
+              '',
+              'Failed jobs:',
+              ...failures,
+            ].join('\n');
+            const openIssues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100,
+            });
+            const prior = openIssues.find((issue) =>
+              !issue.pull_request && issue.title === title && issue.body?.includes(marker)
+            );
+
+            if (prior) {
+              await github.rest.issues.update({
+                owner,
+                repo,
+                issue_number: prior.number,
+                body,
+              });
+              core.info(`Updated deduplicated skill-update failure issue #${prior.number}.`);
+            } else {
+              const { data: issue } = await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body,
+              });
+              core.info(`Created skill-update failure issue #${issue.number}.`);
+            }
