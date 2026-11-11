@@ -26,6 +26,6 @@ The website builder authenticates GitHub API reads with `GITHUB_TOKEN`, fails ra
 
 - Set repository variable `AUTO_RELEASE=false` to stop push, scheduled, and approve-to-ship releases; intentional human manual dispatch and read-only previews remain available.
 - Set repository variable `AUTO_SHIP=false` to disable approve-to-ship. Human approvals are never bypassed.
-- To preview manually, dispatch `release.yml` with `dry_run=true`; for an actual manual dispatch choose the bump and debounce explicitly.
+- To preview manually, dispatch `release.yml` with `dry_run=true`; for an actual manual dispatch choose the bump and debounce explicitly and leave `auto_ship=false` (the default).
 - If a tag exists but its Release does not, rerun `release.yml` or dispatch it manually. The engine repairs the release without adding another version bump.
 - For a repeated workflow/API failure, inspect the deduplicated `Automatic skill release failed` issue and workflow run before taking manual action.
