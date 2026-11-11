@@ -27,6 +27,8 @@ flowchart TD
 
 The worker creates at most one draft PR per prompt, with the `skill-update` label and `main` as its base. Runs without material changes report a no-op. The weekly caller supersedes older bot-authored PRs for the same prompt after the matrix finishes.
 
+The worker prefetches prompt context in `pre-agent-steps`, after gh-aw's optional PR-branch checkout, so the generated `.github/aw/` files remain available to the agent on both dispatch and PR-event runs.
+
 ## Roll out to another repository
 
 1. Add a `*-skill-update.prompt.md` file under `.github/prompts/`.

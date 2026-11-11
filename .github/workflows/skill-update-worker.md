@@ -48,7 +48,7 @@ safe-outputs:
     report-as-issue: false
 strict: true
 timeout-minutes: 45
-steps:
+pre-agent-steps:
   - name: Prepare prompt context
     id: prepare_prompt
     shell: bash
