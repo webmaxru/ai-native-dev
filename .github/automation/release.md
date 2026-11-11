@@ -10,7 +10,7 @@ The engine creates a version-bump commit followed by a release marker commit, pu
 
 Approve-to-ship runs are serialized per repository. GitHub Actions supports one active and one pending run per concurrency group; a newer pending approval can replace an older pending run. If that occurs, the approval remains recorded on its PR and can be retried by submitting a new approval after the active run finishes.
 
-The hub dispatches its existing website workflow after a successful release. Spoke releases do not need a cross-repository secret; the hub website's six-hour schedule refreshes their public content.
+After a successful merge, approve-to-ship dispatches `release.yml` with `auto_ship=true` only while `AUTO_RELEASE` is enabled. The release caller also treats bot-triggered dispatches as automatic and blocks them when the switch is false. A blocked post-ship release is reported on the merged PR; an intentional human `workflow_dispatch` remains available. The hub dispatches its existing website workflow after a successful release. Spoke releases do not need a cross-repository secret; the hub website's six-hour schedule refreshes their public content.
 
 ## Approval gate
 
@@ -27,6 +27,6 @@ Any out-of-scope path causes the bot to comment `manual merge required: touches 
 
 ## Operational limits
 
-`AUTO_RELEASE=false` stops automatic push/scheduled publication but not manual dispatch. `AUTO_SHIP=false` stops automatic PR merging. Neither switch grants approval or bypasses branch protections.
+`AUTO_RELEASE=false` stops automatic push, scheduled, and approve-to-ship publication but not an intentional human manual dispatch. `AUTO_SHIP=false` stops automatic PR merging. Neither switch grants approval or bypasses branch protections.
 
 Scheduled GitHub Actions workflows can be disabled after prolonged inactivity. The local health workflow re-enables workflows disabled for inactivity, but cannot wake if it is itself completely disabled. The hub health workflow checks the spokes' public workflow state and run history; it cannot enable workflows in another repository using the hub's `GITHUB_TOKEN`.

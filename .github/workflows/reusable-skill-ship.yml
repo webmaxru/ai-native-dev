@@ -109,14 +109,32 @@ jobs:
           esac
           gh pr merge "$PR_NUMBER" --repo "$REPOSITORY" "$flag" --delete-branch --match-head-commit "$REVIEWED_SHA"
 
+      - name: Check automatic release policy
+        id: release-policy
+        if: steps.merge.outcome == 'success'
+        env:
+          AUTO_RELEASE: ${{ vars.AUTO_RELEASE }}
+          RELEASE_DISPATCH_SOURCE: auto-ship
+        run: node hub/scripts/release-dispatch-policy.mjs
+
       - name: Dispatch release workflow
         id: dispatch
-        if: steps.merge.outcome == 'success'
+        if: steps.merge.outcome == 'success' && steps.release-policy.outputs.allowed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_WORKFLOW: ${{ inputs.release_workflow }}
           REPOSITORY: ${{ github.repository }}
-        run: gh workflow run "$RELEASE_WORKFLOW" --repo "$REPOSITORY" --ref main -f debounce_minutes=5
+        run: gh workflow run "$RELEASE_WORKFLOW" --repo "$REPOSITORY" --ref main -f debounce_minutes=5 -f auto_ship=true
+
+      - name: Report automatic release disabled
+        if: steps.merge.outcome == 'success' && steps.release-policy.outputs.allowed == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: >-
+          gh pr comment "$PR_NUMBER" --repo "$REPOSITORY"
+          --body "Merged, but automatic publication was suppressed because AUTO_RELEASE=false. An intentional manual dispatch of release.yml remains available."
 
       - name: Report dispatch failure for weekly recovery
         if: steps.merge.outcome == 'success' && steps.dispatch.outcome == 'failure'

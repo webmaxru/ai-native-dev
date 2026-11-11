@@ -14,7 +14,7 @@ The exact `[skip release]` text in the current head commit suppresses a push-tri
 
 `reusable-skill-ship.yml` processes only submitted approvals. It re-queries the pull request and review before merge, and requires a same-repository `github-actions[bot]` update PR titled `[skill-update] ...`, based on `main`, approved by an `OWNER`, `MEMBER`, or `COLLABORATOR` other than the bot. It checks the current reviewed SHA, validates metadata with hub tooling, rejects symlinks/non-file skill entries, and permits changes only under `skills/NAME/`.
 
-When a diff touches other paths, the bot leaves `manual merge required: touches PATHS` and does not merge. A valid draft is marked ready and merged with `--match-head-commit` so a changed head cannot slip through. Ship runs are serialized; GitHub keeps one pending run, and a newer pending approval can replace it. The PR approval remains recorded and can be retried with a new approval. After the merge, the ship workflow explicitly dispatches `release.yml`; if dispatch fails it reports that the weekly safety net can recover. It never approves on a human's behalf or bypasses repository protections.
+When a diff touches other paths, the bot leaves `manual merge required: touches PATHS` and does not merge. A valid draft is marked ready and merged with `--match-head-commit` so a changed head cannot slip through. Ship runs are serialized; GitHub keeps one pending run, and a newer pending approval can replace it. The PR approval remains recorded and can be retried with a new approval. After the merge, the ship workflow explicitly dispatches `release.yml` with `auto_ship=true` only when `AUTO_RELEASE` is enabled; if disabled, it reports that publication was suppressed. The release caller blocks bot-triggered dispatches while disabled but keeps intentional human manual dispatch available. Dispatch failures are reported so the weekly safety net can recover. It never approves on a human's behalf or bypasses repository protections.
 
 ## Health and Website
 
@@ -24,7 +24,7 @@ The website builder authenticates GitHub API reads with `GITHUB_TOKEN`, fails ra
 
 ## Controls and Recovery
 
-- Set repository variable `AUTO_RELEASE=false` to stop push/scheduled releases; manual dispatch and read-only previews remain available.
+- Set repository variable `AUTO_RELEASE=false` to stop push, scheduled, and approve-to-ship releases; intentional human manual dispatch and read-only previews remain available.
 - Set repository variable `AUTO_SHIP=false` to disable approve-to-ship. Human approvals are never bypassed.
 - To preview manually, dispatch `release.yml` with `dry_run=true`; for an actual manual dispatch choose the bump and debounce explicitly.
 - If a tag exists but its Release does not, rerun `release.yml` or dispatch it manually. The engine repairs the release without adding another version bump.

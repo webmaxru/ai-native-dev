@@ -26,7 +26,7 @@ flowchart LR
 
 Repository variables:
 
-- `AUTO_RELEASE=false` disables releases caused by pushes or the schedule. Manual dispatch remains available.
+- `AUTO_RELEASE=false` disables releases caused by pushes, the schedule, and approve-to-ship dispatches. Intentional human manual dispatch remains available.
 - `AUTO_SHIP=false` disables automatic merging after approval.
 
 The human approval is mandatory for bot-generated update PRs. Release validation and previews are read-only; the ship gate re-fetches the current PR and approval, validates the exact head SHA, and only merges `skills/NAME/**` changes. No workflow executes skill scripts from a PR.

@@ -18,6 +18,8 @@ import {
 
 const engine = fileURLToPath(new URL("../skills/agent-skill-deploy/scripts/deploy-auto.mjs", import.meta.url));
 const healthScript = fileURLToPath(new URL("../scripts/repo-health.mjs", import.meta.url));
+const releaseDispatchPolicy = fileURLToPath(new URL("../scripts/release-dispatch-policy.mjs", import.meta.url));
+const releasePreviewScript = fileURLToPath(new URL("../scripts/run-release-preview.mjs", import.meta.url));
 const tempPaths = [];
 
 function command(file, args, cwd, env = process.env) {
@@ -230,6 +232,32 @@ test("dry run is JSON-only and does not change the checkout, tag, or remote", ()
   assert.equal(readFileSync(data.ghState, "utf8"), "v1.0.0\n");
 });
 
+test("release preview workflow invocation writes result outside the target checkout", () => {
+  const data = fixture({ bare: true });
+  write(data.cwd, "skills/sample-skill/SKILL.md", `${skill()}\nA preview change.\n`);
+  commit(data.cwd, "feat: add a preview change");
+  command("git", ["push", "origin", "main"], data.cwd);
+  const runnerTemp = join(data.root, "runner-temp");
+  const resultFile = join(runnerTemp, "release-result.json");
+  const summary = join(data.root, "summary.md");
+  const workflow = readFileSync(new URL("../.github/workflows/release.yml", import.meta.url), "utf8");
+
+  assert.match(workflow, /node hub\/scripts\/run-release-preview\.mjs/);
+  assert.match(workflow, /RELEASE_RESULT_FILE: \$\{\{ runner\.temp \}\}\/release-result\.json/);
+  command(process.execPath, [releasePreviewScript], data.root, {
+    ...environment(data),
+    GITHUB_STEP_SUMMARY: summary,
+    RELEASE_ENGINE: engine,
+    RELEASE_RESULT_FILE: resultFile,
+    RELEASE_TARGET: data.cwd,
+    RUNNER_TEMP: runnerTemp,
+  });
+
+  assert.equal(JSON.parse(readFileSync(resultFile, "utf8")).released, true);
+  assert.equal(command("git", ["status", "--porcelain"], data.cwd), "");
+  assert.match(readFileSync(summary, "utf8"), /Automatic release preview/);
+});
+
 test("push failure after tag creation is repaired without another bump", () => {
   const data = fixture({ bare: true });
   write(data.cwd, "skills/sample-skill/SKILL.md", `${skill()}\nRelease retry fixture.\n`);
@@ -372,4 +400,28 @@ if (args[0] === "api" && args[1] === "--paginate") {
   const summary = readFileSync(env.GITHUB_STEP_SUMMARY, "utf8");
   assert.match(summary, /stale-commit-sha/);
   assert.match(summary, /days old/);
+});
+
+test("release dispatch policy blocks auto-ship when disabled but allows intentional manual dispatch", () => {
+  const { root, cwd } = fixture({ tag: false });
+  const releaseWorkflow = readFileSync(new URL("../.github/workflows/release.yml", import.meta.url), "utf8");
+  const shipWorkflow = readFileSync(new URL("../.github/workflows/reusable-skill-ship.yml", import.meta.url), "utf8");
+  assert.match(releaseWorkflow, /inputs\.auto_ship.*github\.actor == 'github-actions\[bot\]/);
+  assert.match(releaseWorkflow, /needs\.manual-release-policy\.outputs\.allowed == 'true'/);
+  assert.match(shipWorkflow, /-f auto_ship=true/);
+
+  const decide = (source, autoRelease) => {
+    const output = join(root, `release-policy-${source}-${autoRelease}.txt`);
+    command(process.execPath, [releaseDispatchPolicy], cwd, {
+      ...process.env,
+      AUTO_RELEASE: autoRelease,
+      GITHUB_OUTPUT: output,
+      RELEASE_DISPATCH_SOURCE: source,
+    });
+    return readFileSync(output, "utf8").trim();
+  };
+
+  assert.equal(decide("auto-ship", "false"), "allowed=false");
+  assert.equal(decide("manual", "false"), "allowed=true");
+  assert.equal(decide("auto-ship", "true"), "allowed=true");
 });

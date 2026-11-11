@@ -41,6 +41,10 @@ on:
         description: Wait for related updates before publishing
         type: number
         default: 0
+      auto_ship:
+        description: Set by approve-to-ship automation; leave false for an intentional manual release
+        type: boolean
+        default: false
   schedule:
     - cron: "0 9 * * 1"
 
@@ -84,20 +88,12 @@ jobs:
           --summary "$GITHUB_STEP_SUMMARY"
 
       - name: Preview release
-        working-directory: target
         env:
           GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          result_file="$RUNNER_TEMP/release-result.json"
-          node ../hub/skills/agent-skill-deploy/scripts/deploy-auto.mjs --dry-run --json --bump auto > "$result_file"
-          {
-            echo "## Automatic release preview"
-            echo
-            echo '```json'
-            cat "$result_file"
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
+          RELEASE_ENGINE: hub/skills/agent-skill-deploy/scripts/deploy-auto.mjs
+          RELEASE_RESULT_FILE: ${{ runner.temp }}/release-result.json
+          RELEASE_TARGET: target
+        run: node hub/scripts/run-release-preview.mjs
 
   push-release:
     if: github.event_name == 'push' && vars.AUTO_RELEASE != 'false'
@@ -127,8 +123,25 @@ jobs:
       debounce_minutes: 0
       hub_ref: ${{ github.sha }}
 
-  manual-release:
+  manual-release-policy:
     if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    outputs:
+      allowed: ${{ steps.policy.outputs.allowed }}
+    steps:
+      - name: Check out release policy
+        uses: actions/checkout@v4
+
+      - name: Check manual or automated dispatch policy
+        id: policy
+        env:
+          AUTO_RELEASE: ${{ vars.AUTO_RELEASE }}
+          RELEASE_DISPATCH_SOURCE: ${{ (inputs.auto_ship || github.actor == 'github-actions[bot]') && 'auto-ship' || 'manual' }}
+        run: node scripts/release-dispatch-policy.mjs
+
+  manual-release:
+    needs: manual-release-policy
+    if: github.event_name == 'workflow_dispatch' && needs.manual-release-policy.outputs.allowed == 'true'
     permissions:
       contents: write
       issues: write
