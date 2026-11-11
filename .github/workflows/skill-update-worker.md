@@ -20,7 +20,9 @@ permissions:
   pull-requests: read
 concurrency:
   group: skill-update-worker-${{ github.repository }}-${{ inputs.prompt_path }}
+  job-discriminator: ${{ inputs.prompt_path }}
   cancel-in-progress: false
+inlined-imports: true
 engine: copilot
 network:
   allowed:
@@ -35,9 +37,13 @@ tools:
 safe-outputs:
   create-pull-request:
     title-prefix: "[skill-update] "
+    labels: [skill-update]
+    base-branch: main
     draft: true
     if-no-changes: warn
     fallback-as-issue: false
+  report-failure-as-issue: false
+  report-failed-jobs: false
   noop:
     report-as-issue: false
 strict: true

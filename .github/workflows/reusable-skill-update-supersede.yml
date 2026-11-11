@@ -1,0 +1,96 @@
+name: Supersede stale skill-update pull requests
+
+on:
+  workflow_call:
+
+permissions: {}
+
+concurrency:
+  group: skill-update-supersede-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  supersede:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Keep only the newest bot PR per prompt
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const botLogin = 'github-actions[bot]';
+            const { owner, repo } = context.repo;
+            const { data: repository } = await github.rest.repos.get({ owner, repo });
+            const pullRequests = await github.paginate(github.rest.pulls.list, {
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100,
+            });
+            const groups = new Map();
+
+            for (const pullRequest of pullRequests) {
+              const match = pullRequest.title.match(/^\[skill-update\]\s+([^:]+):/);
+              if (!match || pullRequest.user?.login !== botLogin) continue;
+
+              const commits = await github.paginate(github.rest.pulls.listCommits, {
+                owner,
+                repo,
+                pull_number: pullRequest.number,
+                per_page: 100,
+              });
+              const botOnly = commits.length > 0 && commits.every((commit) =>
+                commit.author?.login === botLogin
+              );
+              if (!botOnly) {
+                core.info(`Leaving #${pullRequest.number} untouched: its commit authorship is not exclusively ${botLogin}.`);
+                continue;
+              }
+
+              const slug = match[1].trim();
+              if (!groups.has(slug)) groups.set(slug, []);
+              groups.get(slug).push(pullRequest);
+            }
+
+            for (const [slug, candidates] of groups) {
+              candidates.sort((left, right) =>
+                Date.parse(right.created_at) - Date.parse(left.created_at) || right.number - left.number
+              );
+              const newest = candidates[0];
+
+              for (const older of candidates.slice(1)) {
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: older.number,
+                  body: `Superseded by #${newest.number}`,
+                });
+                await github.rest.pulls.update({
+                  owner,
+                  repo,
+                  pull_number: older.number,
+                  state: 'closed',
+                });
+
+                if (
+                  older.head.repo?.full_name === `${owner}/${repo}` &&
+                  older.head.ref !== repository.default_branch
+                ) {
+                  try {
+                    await github.rest.git.deleteRef({
+                      owner,
+                      repo,
+                      ref: `heads/${older.head.ref}`,
+                    });
+                  } catch (error) {
+                    if (error.status !== 404) throw error;
+                    core.info(`Branch ${older.head.ref} for #${older.number} is already absent.`);
+                  }
+                }
+
+                core.info(`Closed #${older.number} for ${slug}; newest open PR is #${newest.number}.`);
+              }
+            }
