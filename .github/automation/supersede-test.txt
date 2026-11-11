@@ -1,0 +1,1 @@
+Temporary file for verifying that the weekly superseder ignores a human-authored PR.
