@@ -1,0 +1,155 @@
+name: Automatic skill release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "skills/**"
+      - "agents/**"
+      - "commands/**"
+      - "hooks/**"
+      - "mcpServers/**"
+      - "prompts/**"
+      - ".claude-plugin/plugin.json"
+      - ".claude-plugin/marketplace.json"
+      - ".github/plugin/**"
+      - "package.json"
+  pull_request:
+    paths:
+      - "skills/**"
+      - "agents/**"
+      - "commands/**"
+      - "hooks/**"
+      - "mcpServers/**"
+      - "prompts/**"
+      - ".claude-plugin/plugin.json"
+      - ".claude-plugin/marketplace.json"
+      - ".github/plugin/**"
+      - "package.json"
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version bump policy
+        type: choice
+        options: [auto, patch, minor, major]
+        default: auto
+      dry_run:
+        description: Preview without publishing
+        type: boolean
+        default: false
+      debounce_minutes:
+        description: Wait for related updates before publishing
+        type: number
+        default: 0
+      auto_ship:
+        description: Set by approve-to-ship automation; leave false for an intentional manual release
+        type: boolean
+        default: false
+  schedule:
+    - cron: "0 9 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  pull-request-preview:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Check out pull request content
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: target
+          fetch-depth: 0
+
+      - name: Check out release engine
+        uses: actions/checkout@v4
+        with:
+          repository: webmaxru/ai-native-dev
+          ref: ${{ github.event.pull_request.head.repo.full_name == 'webmaxru/ai-native-dev' && github.event.pull_request.head.sha || 'main' }}
+          path: hub
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Validate target content with trusted tooling
+        run: >-
+          python hub/scripts/validate-release-inputs.py
+          --target target
+          --validator hub/.github/skills/skill-creator/scripts/validate-metadata.py
+          --summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Preview release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_ENGINE: hub/skills/agent-skill-deploy/scripts/deploy-auto.mjs
+          RELEASE_RESULT_FILE: ${{ runner.temp }}/release-result.json
+          RELEASE_TARGET: target
+        run: node hub/scripts/run-release-preview.mjs
+
+  push-release:
+    if: github.event_name == 'push' && vars.AUTO_RELEASE != 'false'
+    permissions:
+      contents: write
+      issues: write
+      actions: write
+      pull-requests: read
+    uses: ./.github/workflows/reusable-skill-release.yml
+    with:
+      bump: auto
+      dry_run: false
+      debounce_minutes: 5
+      hub_ref: ${{ github.sha }}
+
+  scheduled-release:
+    if: github.event_name == 'schedule' && vars.AUTO_RELEASE != 'false'
+    permissions:
+      contents: write
+      issues: write
+      actions: write
+      pull-requests: read
+    uses: ./.github/workflows/reusable-skill-release.yml
+    with:
+      bump: auto
+      dry_run: false
+      debounce_minutes: 0
+      hub_ref: ${{ github.sha }}
+
+  manual-release-policy:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    outputs:
+      allowed: ${{ steps.policy.outputs.allowed }}
+    steps:
+      - name: Check out release policy
+        uses: actions/checkout@v4
+
+      - name: Check manual or automated dispatch policy
+        id: policy
+        env:
+          AUTO_RELEASE: ${{ vars.AUTO_RELEASE }}
+          RELEASE_DISPATCH_SOURCE: ${{ (inputs.auto_ship || github.event.sender.type != 'User') && 'auto-ship' || 'manual' }}
+        run: node scripts/release-dispatch-policy.mjs
+
+  manual-release:
+    needs: manual-release-policy
+    if: github.event_name == 'workflow_dispatch' && needs.manual-release-policy.outputs.allowed == 'true'
+    permissions:
+      contents: write
+      issues: write
+      actions: write
+      pull-requests: read
+    uses: ./.github/workflows/reusable-skill-release.yml
+    with:
+      bump: ${{ inputs.bump }}
+      dry_run: ${{ inputs.dry_run }}
+      debounce_minutes: ${{ inputs.debounce_minutes }}
+      hub_ref: ${{ github.sha }}

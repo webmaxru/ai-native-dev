@@ -1,0 +1,50 @@
+name: Reusable skill validation
+
+on:
+  workflow_call:
+    inputs:
+      hub_ref:
+        description: Trusted ai-native-dev ref containing validation tooling
+        type: string
+        default: main
+    outputs:
+      validated:
+        description: Whether skill and plugin metadata validated
+        value: ${{ jobs.validate.outputs.validated }}
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    outputs:
+      validated: ${{ steps.result.outputs.validated }}
+    steps:
+      - name: Check out target repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.sha || 'main' }}
+          path: target
+          fetch-depth: 0
+
+      - name: Check out trusted hub tooling
+        uses: actions/checkout@v4
+        with:
+          repository: webmaxru/ai-native-dev
+          ref: ${{ inputs.hub_ref }}
+          path: hub
+          fetch-depth: 1
+
+      - name: Validate skill metadata and plugin manifests
+        run: >-
+          python hub/scripts/validate-release-inputs.py
+          --target target
+          --validator hub/.github/skills/skill-creator/scripts/validate-metadata.py
+          --summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Record validation result
+        id: result
+        run: echo "validated=true" >> "$GITHUB_OUTPUT"

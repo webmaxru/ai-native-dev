@@ -1,0 +1,29 @@
+name: Validate skills
+
+on:
+  pull_request:
+    paths:
+      - "skills/**"
+      - ".claude-plugin/**"
+      - ".github/plugin/**"
+      - "package.json"
+      - "scripts/validate-release-inputs.py"
+  push:
+    branches: [main]
+    paths:
+      - "skills/**"
+      - ".claude-plugin/**"
+      - ".github/plugin/**"
+      - "package.json"
+      - "scripts/validate-release-inputs.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  validate:
+    uses: ./.github/workflows/reusable-skill-validate.yml
+    with:
+      hub_ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == 'webmaxru/ai-native-dev' && github.event.pull_request.head.sha || (github.event_name == 'pull_request' && 'main' || github.sha) }}
