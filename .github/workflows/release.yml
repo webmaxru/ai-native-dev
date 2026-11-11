@@ -89,12 +89,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          node ../hub/skills/agent-skill-deploy/scripts/deploy-auto.mjs --dry-run --json --bump auto | tee release-result.json
+          result_file="$RUNNER_TEMP/release-result.json"
+          node ../hub/skills/agent-skill-deploy/scripts/deploy-auto.mjs --dry-run --json --bump auto > "$result_file"
           {
             echo "## Automatic release preview"
             echo
             echo '```json'
-            cat release-result.json
+            cat "$result_file"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 

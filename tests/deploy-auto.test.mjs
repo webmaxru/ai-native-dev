@@ -290,15 +290,16 @@ test("repository health script checks workflows and exits cleanly for a healthy 
 const args = process.argv.slice(2);
 const workflow = { id: 17, name: "Weekly Skill Updates", path: ".github/workflows/weekly-skill-updates.yml", state: "active", html_url: "https://github.com/webmaxru/fixture/actions/workflows/17" };
 if (args[0] === "api" && args[1] === "--paginate") {
-  process.stdout.write(JSON.stringify([{ workflows: [workflow] }]));
+  const path = args.at(-1);
+  process.stdout.write(JSON.stringify(path.includes("/actions/workflows?")
+    ? [{ workflows: [workflow] }]
+    : [[]]));
 } else if (args[0] === "api" && args[1] === "repos/webmaxru/fixture") {
   process.stdout.write(JSON.stringify({ default_branch: "main" }));
 } else if (args[0] === "api" && args[1].includes("/runs?event=schedule")) {
   process.stdout.write(JSON.stringify({ workflow_runs: [] }));
 } else if (args[0] === "api" && args[1].includes("/releases/latest")) {
   process.stdout.write("null");
-} else if (args[0] === "api" && args[1].includes("/commits?path=skills")) {
-  process.stdout.write("[]");
 } else if (args[0] === "issue" && args[1] === "list") {
   process.stdout.write("[]");
 } else {
@@ -317,4 +318,58 @@ if (args[0] === "api" && args[1] === "--paginate") {
   const output = command(process.execPath, [healthScript], cwd, env);
   assert.match(output, /All monitored skill automation checks are healthy/);
   assert.match(readFileSync(summary, "utf8"), /All monitored skill automation checks are healthy/);
+});
+
+test("repository health detects unreleased changes beyond the first commit page", () => {
+  const { root, cwd } = fixture({ tag: false });
+  write(cwd, ".github/workflows/weekly-skill-updates.yml", "name: Weekly Skill Updates\non:\n  schedule:\n    - cron: '0 9 * * 1'\n");
+  const recentDate = new Date(Date.now() - 60_000).toISOString();
+  const oldDate = new Date(Date.now() - 5 * 86_400_000).toISOString();
+  const recentCommits = Array.from({ length: 100 }, (_, index) => ({
+    sha: `recent-${index}`,
+    commit: { committer: { date: recentDate } },
+  }));
+  const oldCommit = {
+    sha: "stale-commit-sha",
+    html_url: "https://github.com/webmaxru/fixture/commit/stale-commit-sha",
+    commit: { committer: { date: oldDate } },
+  };
+  const mock = join(root, "health-gh-mock.mjs");
+  writeFileSync(mock, `
+import { writeFileSync } from "node:fs";
+const args = process.argv.slice(2);
+const workflow = { id: 17, name: "Weekly Skill Updates", path: ".github/workflows/weekly-skill-updates.yml", state: "active", html_url: "https://github.com/webmaxru/fixture/actions/workflows/17" };
+const commitPages = JSON.parse(process.env.COMMIT_PAGES_JSON);
+if (args[0] === "api" && args[1] === "--paginate") {
+  const path = args.at(-1);
+  process.stdout.write(JSON.stringify(path.includes("/actions/workflows?")
+    ? [{ workflows: [workflow] }]
+    : commitPages));
+} else if (args[0] === "api" && args[1] === "repos/webmaxru/fixture") {
+  process.stdout.write(JSON.stringify({ default_branch: "main" }));
+} else if (args[0] === "api" && args[1].includes("/runs?event=schedule")) {
+  process.stdout.write(JSON.stringify({ workflow_runs: [] }));
+} else if (args[0] === "api" && args[1].includes("/releases/latest")) {
+  process.stdout.write("null");
+} else if (args[0] === "issue" && args[1] === "list") {
+  process.stdout.write("[]");
+} else if (args[0] === "issue" && args[1] === "create") {
+  process.stdout.write(args[args.indexOf("--body") + 1]);
+} else {
+  process.stderr.write("unexpected gh invocation: " + args.join(" "));
+  process.exit(2);
+}
+`, "utf8");
+  const env = {
+    ...process.env,
+    GITHUB_REPOSITORY: "webmaxru/fixture",
+    GITHUB_STEP_SUMMARY: join(root, "summary.md"),
+    REPO_HEALTH_GH_BIN: process.execPath,
+    REPO_HEALTH_GH_PREFIX: JSON.stringify([mock]),
+    COMMIT_PAGES_JSON: JSON.stringify([recentCommits, [oldCommit]]),
+  };
+  command(process.execPath, [healthScript], cwd, env);
+  const summary = readFileSync(env.GITHUB_STEP_SUMMARY, "utf8");
+  assert.match(summary, /stale-commit-sha/);
+  assert.match(summary, /days old/);
 });

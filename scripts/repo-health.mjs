@@ -52,7 +52,7 @@ function contentAge(repo, defaultBranch, latestRelease) {
     releaseDate = Date.parse(tagCommit?.commit?.committer?.date || tagCommit?.commit?.author?.date || "") || 0;
   }
   const since = releaseDate ? `&since=${encodeURIComponent(new Date(releaseDate).toISOString())}` : "";
-  const commits = api(`repos/${repo}/commits?path=skills&sha=${encodeURIComponent(defaultBranch)}&per_page=100${since}`);
+  const commits = paged(`repos/${repo}/commits?path=skills&sha=${encodeURIComponent(defaultBranch)}&per_page=100${since}`);
   if (!Array.isArray(commits) || !commits.length) return;
   const stale = commits
     .map((commit) => ({
