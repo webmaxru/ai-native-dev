@@ -103,10 +103,11 @@ jobs:
           else
             args+=(--push)
           fi
-          node ../hub/skills/agent-skill-deploy/scripts/deploy-auto.mjs "${args[@]}" | tee release-result.json
+          export RELEASE_RESULT_FILE="$RUNNER_TEMP/release-result.json"
+          node ../hub/skills/agent-skill-deploy/scripts/deploy-auto.mjs "${args[@]}" > "$RELEASE_RESULT_FILE"
           node -e '
             const fs = require("node:fs");
-            const result = JSON.parse(fs.readFileSync("release-result.json", "utf8"));
+            const result = JSON.parse(fs.readFileSync(process.env.RELEASE_RESULT_FILE, "utf8"));
             const output = process.env.GITHUB_OUTPUT;
             fs.appendFileSync(output, `released=${result.released}\nversion=${result.version || ""}\ntag=${result.tag || ""}\n`);
           '
@@ -114,7 +115,7 @@ jobs:
             echo "## Automatic release preview"
             echo
             echo '```json'
-            cat release-result.json
+            cat "$RELEASE_RESULT_FILE"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 

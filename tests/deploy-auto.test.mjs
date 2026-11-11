@@ -258,6 +258,46 @@ test("release preview workflow invocation writes result outside the target check
   assert.match(readFileSync(summary, "utf8"), /Automatic release preview/);
 });
 
+test("reusable release workflow previews and publishes without dirtying the target", () => {
+  const workflow = readFileSync(new URL("../.github/workflows/reusable-skill-release.yml", import.meta.url), "utf8").replace(/\r\n/g, "\n");
+  const step = workflow.split("      - name: Preview or publish release\n")[1]?.split("\n      - name:")[0];
+  assert.ok(step, "reusable workflow must contain the release step");
+  const script = step.split("        run: |\n")[1]
+    .split("\n").map((line) => line.replace(/^          /, "")).join("\n");
+
+  for (const [event, dryRun, published] of [
+    ["pull_request", "false", false],
+    ["workflow_dispatch", "true", false],
+    ["workflow_dispatch", "false", true],
+  ]) {
+    const data = fixture({ bare: true });
+    write(data.cwd, "skills/sample-skill/SKILL.md", `${skill()}\nReusable workflow change.\n`);
+    commit(data.cwd, "feat: exercise shared release workflow");
+    command("git", ["push", "origin", "main"], data.cwd);
+    write(data.root, "hub/skills/agent-skill-deploy/scripts/deploy-auto.mjs", readFileSync(engine, "utf8"));
+    const runnerTemp = join(data.root, "runner-temp");
+    mkdirSync(runnerTemp);
+    const summary = join(data.root, "summary.md");
+    const outputs = join(data.root, "outputs.txt");
+    command("bash", ["-e", "-o", "pipefail", "-c", script], data.cwd, {
+      ...environment(data),
+      RUNNER_TEMP: runnerTemp.replace(/\\/g, "/"),
+      GITHUB_OUTPUT: outputs.replace(/\\/g, "/"),
+      GITHUB_STEP_SUMMARY: summary.replace(/\\/g, "/"),
+      GITHUB_EVENT_NAME: event,
+      DEPLOY_AUTO_EVENT: event,
+      RELEASE_BUMP: "auto",
+      RELEASE_DRY_RUN: dryRun,
+    });
+
+    assert.equal(JSON.parse(readFileSync(join(runnerTemp, "release-result.json"), "utf8")).version, "1.1.0");
+    assert.match(readFileSync(outputs, "utf8"), /version=1\.1\.0/);
+    assert.match(readFileSync(summary, "utf8"), /Automatic release preview/);
+    assert.equal(command("git", ["status", "--porcelain"], data.cwd), "");
+    assert.equal(readFileSync(data.ghState, "utf8").includes("v1.1.0"), published);
+  }
+});
+
 test("push failure after tag creation is repaired without another bump", () => {
   const data = fixture({ bare: true });
   write(data.cwd, "skills/sample-skill/SKILL.md", `${skill()}\nRelease retry fixture.\n`);
