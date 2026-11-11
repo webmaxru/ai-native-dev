@@ -12,6 +12,8 @@ Approve-to-ship runs are serialized per repository. GitHub Actions supports one 
 
 After a successful merge, approve-to-ship dispatches `release.yml` with `auto_ship=true` only while `AUTO_RELEASE` is enabled. The release caller also treats bot-triggered dispatches as automatic and blocks them when the switch is false. A blocked post-ship release is reported on the merged PR; an intentional human `workflow_dispatch` remains available. The hub dispatches its existing website workflow after a successful release. Spoke releases do not need a cross-repository secret; the hub website's six-hour schedule refreshes their public content.
 
+The dispatch classifier treats `auto_ship=true`, non-`User` senders, and missing sender types as automatic. Automation using a human's personal access token is indistinguishable from that human; it must set `auto_ship=true` to honor this switch.
+
 ## Approval gate
 
 Approve-to-ship only handles a newly submitted human approval. The PR must be authored by `github-actions[bot]`, use the `[skill-update] ` title prefix, target `main` in the same repository, and contain only regular-file changes under `skills/NAME/`. The reviewer must be an owner, organization member, or collaborator and cannot be the bot. The gate rechecks the latest approval and reviewed SHA immediately before merging with an explicit head match.

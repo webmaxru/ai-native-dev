@@ -136,7 +136,7 @@ jobs:
         id: policy
         env:
           AUTO_RELEASE: ${{ vars.AUTO_RELEASE }}
-          RELEASE_DISPATCH_SOURCE: ${{ (inputs.auto_ship || github.actor == 'github-actions[bot]') && 'auto-ship' || 'manual' }}
+          RELEASE_DISPATCH_SOURCE: ${{ (inputs.auto_ship || github.event.sender.type != 'User') && 'auto-ship' || 'manual' }}
         run: node scripts/release-dispatch-policy.mjs
 
   manual-release:

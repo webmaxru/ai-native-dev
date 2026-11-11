@@ -446,7 +446,7 @@ test("release dispatch policy blocks auto-ship when disabled but allows intentio
   const { root, cwd } = fixture({ tag: false });
   const releaseWorkflow = readFileSync(new URL("../.github/workflows/release.yml", import.meta.url), "utf8");
   const shipWorkflow = readFileSync(new URL("../.github/workflows/reusable-skill-ship.yml", import.meta.url), "utf8");
-  assert.match(releaseWorkflow, /inputs\.auto_ship.*github\.actor == 'github-actions\[bot\]/);
+  assert.match(releaseWorkflow, /inputs\.auto_ship \|\| github\.event\.sender\.type != 'User'/);
   assert.match(releaseWorkflow, /needs\.manual-release-policy\.outputs\.allowed == 'true'/);
   assert.match(shipWorkflow, /-f auto_ship=true/);
 
