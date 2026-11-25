@@ -23,7 +23,7 @@
         "managing lockfiles",
         "compiling agent context"
       ],
-      "version": "1.10",
+      "version": "1.11",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",
@@ -343,7 +343,7 @@
         "adding fields or sets to existing content types",
         "querying Enonic XP input types and super-types"
       ],
-      "version": "1.5",
+      "version": "1.6",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",
@@ -443,7 +443,7 @@
         "return types",
         "usage examples"
       ],
-      "version": "1.4",
+      "version": "1.5",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",

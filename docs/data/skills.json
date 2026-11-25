@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-25T10:51:05.539Z",
+  "generatedAt": "2026-11-25T15:24:25.771Z",
   "totalSkills": 19,
   "plugins": [
     {
@@ -15,7 +15,7 @@
           "dirName": "agent-package-manager",
           "description": "Installs, configures, audits, and operates Agent Package Manager (APM) in repositories. Use when initializing apm.yml, installing or updating packages, validating manifests, managing lockfiles, compiling agent context, browsing MCP servers, setting up runtimes, or packaging resolved context for CI and team distribution. Don't use for writing a single skill by hand, generic package managers like npm or pip, or non-APM agent configuration systems.",
           "shortDescription": "Installs, configures, audits, and operates Agent Package Manager (APM) in repositories.",
-          "version": "1.10",
+          "version": "1.11",
           "author": "webmaxru",
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/ai-native-dev/tree/main/skills/agent-package-manager",
@@ -178,7 +178,7 @@
           "dirName": "enonic-content-type-generator",
           "description": "Generates Enonic XP content type XML schema definitions from natural-language descriptions. Covers structured content modeling including input types, form layout, option sets, item sets, mixins, x-data, and content-type inheritance. Use when creating, scaffolding, or generating Enonic XP content type definitions, adding fields or sets to existing content types, or querying Enonic XP input types and super-types. Do not use for non-Enonic content modeling, GraphQL queries, JavaScript/TypeScript controllers, or generic XML editing unrelated to Enonic schemas.",
           "shortDescription": "Generates Enonic XP content type XML schema definitions from natural-language descriptions.",
-          "version": "1.5",
+          "version": "1.6",
           "author": "webmaxru",
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/enonic-agent-skills/tree/main/skills/enonic-content-type-generator",
@@ -222,7 +222,7 @@
           "dirName": "enonic-library-reference",
           "description": "Enonic XP server-side JavaScript/TypeScript API reference for all /lib/xp/* libraries. Provides function signatures, parameters, return types, and usage examples for lib-content, lib-node, lib-auth, lib-portal, lib-context, lib-event, lib-task, lib-repo, lib-io, lib-mail, lib-schema, lib-project, lib-export, lib-scheduler, lib-value, lib-i18n, lib-websocket, lib-admin, lib-app, lib-auditlog, lib-cluster, lib-common, lib-grid, and lib-vhost. Use when looking up Enonic XP library functions, parameter shapes, return types, or usage examples. Do not use for Guillotine GraphQL queries, content type schema definitions, Enonic CLI commands, or non-Enonic JavaScript APIs.",
           "shortDescription": "Enonic XP server-side JavaScript/TypeScript API reference for all /lib/xp/* libraries.",
-          "version": "1.4",
+          "version": "1.5",
           "author": "webmaxru",
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/enonic-agent-skills/tree/main/skills/enonic-library-reference",
