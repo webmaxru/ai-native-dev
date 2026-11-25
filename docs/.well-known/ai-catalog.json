@@ -264,7 +264,7 @@
         "summarize or write or rewrite flows",
         "streaming output"
       ],
-      "version": "1.4",
+      "version": "1.5",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",
