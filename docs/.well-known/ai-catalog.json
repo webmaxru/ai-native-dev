@@ -23,7 +23,7 @@
         "managing lockfiles",
         "compiling agent context"
       ],
-      "version": "1.9",
+      "version": "1.10",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",
@@ -46,7 +46,7 @@
         "releasing",
         "publishing"
       ],
-      "version": "1.5",
+      "version": "1.6",
       "metadata": {
         "author": "webmaxru",
         "license": "MIT",

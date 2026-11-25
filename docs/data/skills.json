@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-25T10:45:07.291Z",
+  "generatedAt": "2026-11-25T10:51:05.539Z",
   "totalSkills": 19,
   "plugins": [
     {
@@ -15,7 +15,7 @@
           "dirName": "agent-package-manager",
           "description": "Installs, configures, audits, and operates Agent Package Manager (APM) in repositories. Use when initializing apm.yml, installing or updating packages, validating manifests, managing lockfiles, compiling agent context, browsing MCP servers, setting up runtimes, or packaging resolved context for CI and team distribution. Don't use for writing a single skill by hand, generic package managers like npm or pip, or non-APM agent configuration systems.",
           "shortDescription": "Installs, configures, audits, and operates Agent Package Manager (APM) in repositories.",
-          "version": "1.9",
+          "version": "1.10",
           "author": "webmaxru",
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/ai-native-dev/tree/main/skills/agent-package-manager",
@@ -26,7 +26,7 @@
           "dirName": "agent-skill-deploy",
           "description": "Deploys agent skill collections from any GitHub repository with a /skills folder to one or more distribution surfaces: GitHub releases, Claude Code marketplace, VS Code plugin marketplace, and Copilot CLI plugin marketplace. Handles pre-flight validation, conventional commit analysis, version bumping across surface configs, and surface-specific publishing with dry-run support. Use when releasing, publishing, or deploying a skills collection to any supported marketplace or creating a GitHub release for a skills repository. Don't use for deploying non-skill packages, npm modules, Docker images, or Azure resources.",
           "shortDescription": "Deploys agent skill collections from any GitHub repository with a /skills folder to one or more distribution surfaces: GitHub releases, Claude Code marketplace, VS Code plugin marketplace, and Copilot CLI plugin marketplace.",
-          "version": "1.5",
+          "version": "1.6",
           "author": "webmaxru",
           "license": "MIT",
           "githubUrl": "https://github.com/webmaxru/ai-native-dev/tree/main/skills/agent-skill-deploy",
