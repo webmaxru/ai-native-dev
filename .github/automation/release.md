@@ -4,6 +4,8 @@
 
 Changes to skills or declared plugin content on `main` start `release.yml`. Pushes wait five minutes to collect related merges; the scheduled safety net and manual dispatch use a zero-minute delay unless overridden. Debounce runs are replaceable, while publication is serialized and not cancelled mid-push. The publisher checks out the latest `main` after the wait.
 
+When forwarding `debounce_minutes` from a dispatch, normalize it with `fromJSON(format('{0}', inputs.debounce_minutes || 0))`. GitHub CLI dispatches can supply the value as a string, but the reusable workflow requires a number. To check this boundary without publishing, dispatch `release.yml` with `dry_run=true` and `debounce_minutes=0`.
+
 The trusted `deploy-auto.mjs` engine compares publishable file changes with the latest reachable semver tag. It ignores unrelated documentation and website-only changes, increments the plugin version from content-touching conventional commits, and increments changed skill versions unless they are already ahead of the tag. The `[skip release]` directive suppresses a push-triggered release only; scheduled and manual runs ignore it and can publish accumulated content.
 
 The engine creates a version-bump commit followed by a release marker commit, pushes the branch and tag atomically, and creates a GitHub Release with per-skill notes. A non-fast-forward race causes a fresh calculation in an isolated worktree, up to three attempts. A failure after the tag push is visible and retryable: if the tag already exists but its Release does not, the next run repairs the Release without bumping versions again. Failed runs update one open `Automatic skill release failed` issue.
