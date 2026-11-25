@@ -20,7 +20,9 @@ permissions:
   pull-requests: read
 concurrency:
   group: skill-update-worker-${{ github.repository }}-${{ inputs.prompt_path }}
+  job-discriminator: ${{ inputs.prompt_path }}
   cancel-in-progress: false
+inlined-imports: true
 engine: copilot
 network:
   allowed:
@@ -35,14 +37,18 @@ tools:
 safe-outputs:
   create-pull-request:
     title-prefix: "[skill-update] "
+    labels: [skill-update]
+    base-branch: main
     draft: true
     if-no-changes: warn
     fallback-as-issue: false
+  report-failure-as-issue: false
+  report-failed-jobs: false
   noop:
     report-as-issue: false
 strict: true
 timeout-minutes: 45
-steps:
+pre-agent-steps:
   - name: Prepare prompt context
     id: prepare_prompt
     shell: bash
@@ -168,7 +174,7 @@ Read `.github/aw/skill-update-runtime.md` first, then execute the selected saved
 ## Pull Request Requirements
 
 - Keep the branch and PR scoped only to the selected prompt described in `.github/aw/skill-update-runtime.md`.
-- Use a concise PR title derived from the selected prompt slug in `.github/aw/skill-update-runtime.md`.
+- Use a PR title in the exact form `<prompt-slug>: <concise summary>`; the safe-output prefix adds `[skill-update] `.
 - Summarize the material deltas, validations run, and unresolved risks in the PR body.
 
 ## Constraints
