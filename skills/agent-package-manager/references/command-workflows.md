@@ -61,6 +61,24 @@ apm install webmaxru/web-ai-agent-skills/skills/webmcp
 apm install ./packages/local-skill-pack
 ```
 
+Install one named skill from a multi-skill repository, add a marketplace plugin, or add an MCP server for every harness in the project:
+
+```text
+apm install vercel-labs/agent-skills --skill deploy-to-vercel
+apm marketplace add anthropics/claude-code
+apm install commit-commands@claude-code-plugins
+apm install --mcp io.github.github/github-mcp-server --transport http
+```
+
+Verify in CI that the manifest, lockfile, and deployed files agree:
+
+```text
+apm install --frozen
+apm audit --ci
+```
+
+`apm install --frozen` installs from `apm.lock.yaml` and verifies deployed files against it. `apm audit --ci` fails when the files and the lockfile disagree.
+
 Use the shortest canonical GitHub form by default:
 
 * For repository packages, use `owner/repo`.

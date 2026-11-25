@@ -4,7 +4,7 @@ description: Installs, configures, audits, and operates Agent Package Manager (A
 license: MIT
 metadata:
   author: webmaxru
-  version: "1.10"
+  version: "1.11"
 ---
 
 # Agent Package Manager
@@ -34,7 +34,7 @@ metadata:
 3. After running `apm install --update` or `apm deps update`, verify the lockfile `resolved_commit` actually changed. If packages were served from a stale cache, follow the "Stale packages after update" workflow in `references/troubleshooting.md`.
 4. When the request is to install a single skill from a repository, provide the package path down to that skill directory instead of a vague repo-only placeholder, for example `apm install webmaxru/web-ai-agent-skills/skills/webmcp`.
 5. Verify the resolved state with `apm deps list`, `apm deps tree`, or `apm deps info <package>` after dependency changes.
-6. Treat `apm.lock.yaml` as the source of truth for resolved commits and deployed files. Recommend committing it for team and CI reproducibility.
+6. Treat `apm.lock.yaml` as the source of truth for resolved commits and deployed files. Recommend committing it for team and CI reproducibility, and recommend `apm install --frozen` plus `apm audit --ci` in CI so the build fails when the manifest, lockfile, and deployed files disagree.
 7. If the repository needs MCP discovery or selection, use `apm mcp list`, `apm mcp search <query>`, and `apm mcp show <server>` before editing MCP entries by hand.
 8. If installation output reports collisions or skipped files, read `references/troubleshooting.md` before retrying with forceful options.
 9. If the repository consumes packages from itself (self-referencing dependency), remind the user that changes must be committed and pushed before APM can fetch them. Read `references/troubleshooting.md` for the "Self-referencing dependencies" section.
