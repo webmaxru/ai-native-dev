@@ -151,5 +151,5 @@ jobs:
     with:
       bump: ${{ inputs.bump }}
       dry_run: ${{ inputs.dry_run }}
-      debounce_minutes: ${{ inputs.debounce_minutes }}
+      debounce_minutes: ${{ fromJSON(format('{0}', inputs.debounce_minutes || 0)) }}
       hub_ref: ${{ github.sha }}
