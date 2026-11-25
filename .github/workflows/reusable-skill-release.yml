@@ -1,0 +1,143 @@
+name: Reusable skill release
+
+on:
+  workflow_call:
+    inputs:
+      bump:
+        description: Version bump policy
+        type: string
+        default: auto
+      dry_run:
+        description: Preview without changing repository state
+        type: boolean
+        default: false
+      debounce_minutes:
+        description: Wait for related merges before publishing
+        type: number
+        default: 5
+      hub_ref:
+        description: Trusted ai-native-dev ref containing the release engine
+        type: string
+        default: main
+    outputs:
+      released:
+        description: Whether a release was created or repaired
+        value: ${{ jobs.publish.outputs.released }}
+      version:
+        description: Released plugin version
+        value: ${{ jobs.publish.outputs.version }}
+      tag:
+        description: Released tag
+        value: ${{ jobs.publish.outputs.tag }}
+
+permissions:
+  contents: write
+  issues: write
+  actions: write
+  pull-requests: read
+
+jobs:
+  debounce:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: skill-release-debounce-${{ github.repository }}
+      cancel-in-progress: true
+    steps:
+      - name: Debounce related updates
+        if: inputs.debounce_minutes > 0 && github.event_name != 'pull_request'
+        run: sleep $(( ${{ inputs.debounce_minutes }} * 60 ))
+      - run: echo "Debounce window complete."
+
+  publish:
+    needs: debounce
+    runs-on: ubuntu-latest
+    concurrency:
+      group: skill-release-publish-${{ github.repository }}
+      cancel-in-progress: false
+    outputs:
+      released: ${{ steps.result.outputs.released }}
+      version: ${{ steps.result.outputs.version }}
+      tag: ${{ steps.result.outputs.tag }}
+    steps:
+      - name: Check out target repository after debounce
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.sha || 'main' }}
+          path: target
+          fetch-depth: 0
+
+      - name: Check out trusted hub release engine
+        uses: actions/checkout@v4
+        with:
+          repository: webmaxru/ai-native-dev
+          ref: ${{ inputs.hub_ref }}
+          path: hub
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Validate target content with trusted tooling
+        run: >-
+          python hub/scripts/validate-release-inputs.py
+          --target target
+          --validator hub/.github/skills/skill-creator/scripts/validate-metadata.py
+          --summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Preview or publish release
+        id: result
+        working-directory: target
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_BUMP: ${{ inputs.bump }}
+          RELEASE_DRY_RUN: ${{ inputs.dry_run }}
+          DEPLOY_AUTO_EVENT: ${{ github.event_name }}
+        shell: bash
+        run: |
+          args=(--json --bump "$RELEASE_BUMP")
+          if [[ "$RELEASE_DRY_RUN" == "true" || "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            args+=(--dry-run)
+          else
+            args+=(--push)
+          fi
+          export RELEASE_RESULT_FILE="$RUNNER_TEMP/release-result.json"
+          node ../hub/skills/agent-skill-deploy/scripts/deploy-auto.mjs "${args[@]}" > "$RELEASE_RESULT_FILE"
+          node -e '
+            const fs = require("node:fs");
+            const result = JSON.parse(fs.readFileSync(process.env.RELEASE_RESULT_FILE, "utf8"));
+            const output = process.env.GITHUB_OUTPUT;
+            fs.appendFileSync(output, `released=${result.released}\nversion=${result.version || ""}\ntag=${result.tag || ""}\n`);
+          '
+          {
+            echo "## Automatic release preview"
+            echo
+            echo '```json'
+            cat "$RELEASE_RESULT_FILE"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Dispatch hub website refresh
+        if: steps.result.outputs.released == 'true' && github.repository == 'webmaxru/ai-native-dev' && inputs.dry_run == false && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy-website.yml --repo webmaxru/ai-native-dev --ref main
+
+      - name: Report release failure
+        if: failure() && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
+        run: |
+          title="Automatic skill release failed"
+          number=$(gh issue list --repo "$REPOSITORY" --state open --search "\"$title\" in:title" --json number --jq '.[0].number // empty')
+          body="Release run failed: $RUN_URL"
+          if [[ -n "$number" ]]; then
+            gh issue comment "$number" --repo "$REPOSITORY" --body "$body"
+          else
+            gh issue create --repo "$REPOSITORY" --title "$title" --body "$body"
+          fi

@@ -4,6 +4,7 @@
   },
   "version": "1.13.0",
   "scripts": {
-    "build:website": "node scripts/build-website.mjs"
+    "build:website": "node scripts/build-website.mjs",
+    "test": "node --test"
   }
 }

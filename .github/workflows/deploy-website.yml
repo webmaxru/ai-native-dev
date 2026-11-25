@@ -9,8 +9,7 @@ on:
       - 'website/**'
   workflow_dispatch:
   schedule:
-    # Weekly rebuild to pick up changes from external repos
-    - cron: '0 6 * * 1'
+    - cron: '0 */6 * * *'
 
 permissions:
   contents: write
@@ -18,31 +17,55 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-website-main
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Build website
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: node scripts/build-website.mjs
 
-      - name: Check for changes
-        id: check
-        run: |
-          git add docs/
-          if git diff --staged --quiet; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Commit and push
-        if: steps.check.outputs.changed == 'true'
+      - name: Commit and push catalog changes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/
-          git commit -m "chore: rebuild skills catalog website [skip ci]"
-          git push
+          for attempt in 1 2 3; do
+            git fetch origin main
+            if [[ "$attempt" -gt 1 ]]; then
+              git rebase origin/main
+              node scripts/build-website.mjs
+            fi
+            git add docs/
+            if git diff --cached --quiet; then
+              ahead=$(git rev-list --count origin/main..HEAD)
+              if [[ "$ahead" -eq 0 ]]; then
+                echo "Catalog is unchanged."
+                exit 0
+              fi
+            else
+              if [[ "$attempt" -eq 1 ]]; then
+                git commit -m "chore: rebuild skills catalog website [skip ci]"
+              else
+                git commit --amend --no-edit
+              fi
+            fi
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push raced with another main update; retrying from latest main."
+          done
+          echo "Unable to publish the catalog after three bounded retries." >&2
+          exit 1

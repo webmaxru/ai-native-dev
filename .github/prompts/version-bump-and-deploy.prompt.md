@@ -7,6 +7,8 @@ agent: "agent"
 
 Scan skills and saved prompts to detect whether a version bump is needed, perform it if so, commit, push, and deploy.
 
+**Fallback note:** CI now handles skill releases automatically after publishable content reaches `main`. Use this prompt as a manual fallback only when the release workflow is unavailable or a maintainer explicitly requests manual recovery.
+
 **Scope constraint:** Only scan the following two repository-root directories. Do NOT scan any other locations (e.g., `apm_modules/`, `.github/skills/`, `.github/prompts/`, or any nested skill/prompt directories elsewhere in the tree):
 
 - `/skills` — skill directories

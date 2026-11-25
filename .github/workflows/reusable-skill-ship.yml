@@ -1,0 +1,147 @@
+name: Reusable approve-to-ship gate
+
+on:
+  workflow_call:
+    inputs:
+      hub_ref:
+        description: Trusted ai-native-dev ref containing the ship gate
+        type: string
+        default: main
+      merge_method:
+        description: Pull request merge method
+        type: string
+        default: squash
+      release_workflow:
+        description: Workflow dispatched after the merge
+        type: string
+        default: release.yml
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  actions: write
+
+jobs:
+  ship:
+    if: github.event_name == 'pull_request_review' && github.event.action == 'submitted' && github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: skill-auto-ship-${{ github.repository }}
+      cancel-in-progress: false
+    steps:
+      - name: Check out the exact reviewed commit
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: target
+          fetch-depth: 0
+
+      - name: Check out trusted ship and validation tooling
+        uses: actions/checkout@v4
+        with:
+          repository: webmaxru/ai-native-dev
+          ref: ${{ inputs.hub_ref }}
+          path: hub
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Verify the approval and skill-only diff
+        id: gate
+        working-directory: target
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUTO_SHIP: ${{ vars.AUTO_SHIP }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REVIEW_ID: ${{ github.event.review.id }}
+          REVIEWED_SHA: ${{ github.event.review.commit_id }}
+          REVIEWER_LOGIN: ${{ github.event.review.user.login }}
+        run: node ../hub/scripts/ship-approved-update.mjs
+
+      - name: Validate reviewed skill metadata
+        if: steps.gate.outputs.ship == 'true'
+        run: >-
+          python hub/scripts/validate-release-inputs.py
+          --target target
+          --validator hub/.github/skills/skill-creator/scripts/validate-metadata.py
+
+      - name: Mark pull request ready
+        if: steps.gate.outputs.ship == 'true' && steps.gate.outputs.draft == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr ready "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}"
+
+      - name: Recheck approval and reviewed SHA immediately before merge
+        id: premerge
+        if: steps.gate.outputs.ship == 'true'
+        working-directory: target
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUTO_SHIP: ${{ vars.AUTO_SHIP }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REVIEW_ID: ${{ github.event.review.id }}
+          REVIEWED_SHA: ${{ steps.gate.outputs.reviewed_sha }}
+          REVIEWER_LOGIN: ${{ github.event.review.user.login }}
+        run: node ../hub/scripts/ship-approved-update.mjs
+
+      - name: Merge the reviewed commit
+        id: merge
+        if: steps.premerge.outputs.ship == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          METHOD: ${{ inputs.merge_method }}
+          REVIEWED_SHA: ${{ steps.premerge.outputs.reviewed_sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPOSITORY: ${{ github.repository }}
+        shell: bash
+        run: |
+          case "$METHOD" in
+            squash) flag=--squash ;;
+            merge) flag=--merge ;;
+            rebase) flag=--rebase ;;
+            *) echo "Unsupported merge method: $METHOD" >&2; exit 1 ;;
+          esac
+          gh pr merge "$PR_NUMBER" --repo "$REPOSITORY" "$flag" --delete-branch --match-head-commit "$REVIEWED_SHA"
+
+      - name: Check automatic release policy
+        id: release-policy
+        if: steps.merge.outcome == 'success'
+        env:
+          AUTO_RELEASE: ${{ vars.AUTO_RELEASE }}
+          RELEASE_DISPATCH_SOURCE: auto-ship
+        run: node hub/scripts/release-dispatch-policy.mjs
+
+      - name: Dispatch release workflow
+        id: dispatch
+        if: steps.merge.outcome == 'success' && steps.release-policy.outputs.allowed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_WORKFLOW: ${{ inputs.release_workflow }}
+          REPOSITORY: ${{ github.repository }}
+        run: gh workflow run "$RELEASE_WORKFLOW" --repo "$REPOSITORY" --ref main -f debounce_minutes=5 -f auto_ship=true
+
+      - name: Report automatic release disabled
+        if: steps.merge.outcome == 'success' && steps.release-policy.outputs.allowed == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: >-
+          gh pr comment "$PR_NUMBER" --repo "$REPOSITORY"
+          --body "Merged, but automatic publication was suppressed because AUTO_RELEASE=false. An intentional manual dispatch of release.yml remains available."
+
+      - name: Report dispatch failure for weekly recovery
+        if: steps.merge.outcome == 'success' && steps.dispatch.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: >-
+          gh pr comment "$PR_NUMBER" --repo "$REPOSITORY"
+          --body "Merged, but the automatic release workflow dispatch failed. The weekly safety net can recover; run \`gh workflow run release.yml --repo $REPOSITORY --ref main\` if needed."

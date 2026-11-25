@@ -1,0 +1,23 @@
+name: Approve to ship skill updates
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  ship-approved-update:
+    if: github.event.review.state == 'approved'
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      actions: write
+    uses: ./.github/workflows/reusable-skill-ship.yml
+    with:
+      hub_ref: main
+      merge_method: squash
+      release_workflow: release.yml

@@ -6,7 +6,7 @@
  * generates docs/data/skills.json and docs/index.html.
  */
 
-import { readFileSync, mkdirSync, writeFileSync, copyFileSync } from "node:fs";
+import { readFileSync, mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -112,9 +112,15 @@ async function fetchJSON(url) {
   if (process.env.GITHUB_TOKEN) {
     headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
   }
-  const res = await fetch(url, { headers });
-  if (!res.ok) throw new Error(`GET ${url} → ${res.status} ${res.statusText}`);
-  return res.json();
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const res = await fetch(url, { headers });
+    if (res.ok) return res.json();
+    const retryable = res.status === 429 || res.status >= 500 ||
+      (res.status === 403 && res.headers.get("x-ratelimit-remaining") === "0");
+    if (!retryable || attempt === 2) throw new Error(`GET ${url} → ${res.status} ${res.statusText}`);
+    await new Promise((resolve) => setTimeout(resolve, 300 * (2 ** attempt)));
+  }
+  throw new Error(`GET ${url} exhausted retries`);
 }
 
 async function fetchText(url) {
@@ -122,9 +128,15 @@ async function fetchText(url) {
   if (process.env.GITHUB_TOKEN) {
     headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
   }
-  const res = await fetch(url, { headers });
-  if (!res.ok) throw new Error(`GET ${url} → ${res.status} ${res.statusText}`);
-  return res.text();
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const res = await fetch(url, { headers });
+    if (res.ok) return res.text();
+    const retryable = res.status === 429 || res.status >= 500 ||
+      (res.status === 403 && res.headers.get("x-ratelimit-remaining") === "0");
+    if (!retryable || attempt === 2) throw new Error(`GET ${url} → ${res.status} ${res.statusText}`);
+    await new Promise((resolve) => setTimeout(resolve, 300 * (2 ** attempt)));
+  }
+  throw new Error(`GET ${url} exhausted retries`);
 }
 
 async function fetchPluginSkills(plugin) {
@@ -134,7 +146,7 @@ async function fetchPluginSkills(plugin) {
   const entries = await fetchJSON(
     `https://api.github.com/repos/${owner}/${repo}/contents/skills`
   );
-  const dirs = entries.filter((e) => e.type === "dir");
+  const dirs = entries.filter((e) => e.type === "dir").sort((left, right) => left.name.localeCompare(right.name));
 
   const skills = [];
   for (const dir of dirs) {
@@ -166,7 +178,7 @@ async function fetchPluginSkills(plugin) {
 
       console.log(`    ✓ ${name}${version ? ` v${version}` : ""}`);
     } catch (err) {
-      console.warn(`    ✗ ${dir.name}: ${err.message}`);
+      throw new Error(`Failed to load ${plugin.repo}/skills/${dir.name}: ${err.message}`);
     }
   }
 
@@ -286,11 +298,23 @@ async function main() {
   const totalSkills = plugins.reduce((sum, p) => sum + p.skillCount, 0);
   console.log(`\n  Total: ${totalSkills} skills across ${plugins.length} plugins\n`);
 
-  const catalogData = {
-    generatedAt: new Date().toISOString(),
+  const content = {
     totalSkills,
     plugins,
   };
+  const existingPath = resolve(ROOT, "docs", "data", "skills.json");
+  let generatedAt = new Date().toISOString();
+  if (existsSync(existingPath)) {
+    try {
+      const previous = JSON.parse(readFileSync(existingPath, "utf8"));
+      if (JSON.stringify({ totalSkills: previous.totalSkills, plugins: previous.plugins }) === JSON.stringify(content)) {
+        generatedAt = previous.generatedAt || generatedAt;
+      }
+    } catch {
+      // Rebuild malformed or outdated generated data instead of preserving it.
+    }
+  }
+  const catalogData = { generatedAt, ...content };
 
   // Ensure output directories exist
   const docsDir = resolve(ROOT, "docs");
@@ -299,7 +323,7 @@ async function main() {
 
   // Write JSON data
   const jsonPath = resolve(dataDir, "skills.json");
-  writeFileSync(jsonPath, JSON.stringify(catalogData, null, 2));
+  writeFileSync(jsonPath, `${JSON.stringify(catalogData, null, 2)}\n`);
   console.log(`  Written ${jsonPath}`);
 
   // Read template and inject data
@@ -323,7 +347,7 @@ async function main() {
   const wellKnownDir = resolve(docsDir, ".well-known");
   mkdirSync(wellKnownDir, { recursive: true });
   const manifestPath = resolve(wellKnownDir, "ai-catalog.json");
-  writeFileSync(manifestPath, JSON.stringify(ardManifest, null, 2));
+  writeFileSync(manifestPath, `${JSON.stringify(ardManifest, null, 2)}\n`);
   console.log(`  Written ${manifestPath} (${ardManifest.entries.length} entries)`);
 
   console.log("\nDone!");

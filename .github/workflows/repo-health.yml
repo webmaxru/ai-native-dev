@@ -1,0 +1,18 @@
+name: Skill automation health
+
+on:
+  schedule:
+    - cron: "30 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  actions: write
+
+jobs:
+  health:
+    uses: ./.github/workflows/reusable-repo-health.yml
+    with:
+      hub_ref: ${{ github.sha }}
+      watch_repos: webmaxru/web-ai-agent-skills,webmaxru/enonic-agent-skills

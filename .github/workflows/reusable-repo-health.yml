@@ -1,0 +1,50 @@
+name: Reusable skill repository health
+
+on:
+  workflow_call:
+    inputs:
+      hub_ref:
+        description: Trusted ai-native-dev ref containing health tooling
+        type: string
+        default: main
+      watch_repos:
+        description: Comma-separated public repositories to monitor
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+  issues: write
+  actions: write
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out monitored repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: main
+          path: target
+          fetch-depth: 0
+
+      - name: Check out trusted hub health tooling
+        uses: actions/checkout@v4
+        with:
+          repository: webmaxru/ai-native-dev
+          ref: ${{ inputs.hub_ref }}
+          path: hub
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check schedules, update runs, and unreleased content
+        working-directory: target
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          WATCH_REPOS: ${{ inputs.watch_repos }}
+        run: node ../hub/scripts/repo-health.mjs
