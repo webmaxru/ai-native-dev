@@ -40,6 +40,10 @@ The human approval is mandatory for bot-generated update PRs. Release validation
 
 The current implementation PR must remain open for its owner to merge. The owner merges the hub layers before the spokes; automation does not merge its own implementation.
 
+## Control center
+
+`.github/extensions/skill-ops-center/` is a Copilot canvas that shows the status of these flows across the connected repositories and drives the controls above. See [its install guide](../extensions/skill-ops-center/INSTALL.md) to run it from any repository.
+
 ## Boundaries
 
 The health workflow can re-enable a workflow disabled for inactivity only when it runs. A fully disabled hub health workflow cannot wake itself; the hub's schedule monitors public spokes but is not a universal perpetual-keepalive guarantee. See [release operations](release.md) for debounce, recovery, and manual fallback details.
