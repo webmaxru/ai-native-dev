@@ -61,6 +61,22 @@ apm install webmaxru/web-ai-agent-skills/skills/webmcp
 apm install ./packages/local-skill-pack
 ```
 
+Install selected skills, marketplace plugins, or an MCP server directly:
+
+```text
+apm install vercel-labs/agent-skills --skill deploy-to-vercel
+apm marketplace add anthropics/claude-code
+apm install commit-commands@claude-code-plugins
+apm install --mcp io.github.github/github-mcp-server --transport http
+```
+
+Verify that deployed files match the lockfile in CI:
+
+```text
+apm install --frozen
+apm audit --ci
+```
+
 Use the shortest canonical GitHub form by default:
 
 * For repository packages, use `owner/repo`.
