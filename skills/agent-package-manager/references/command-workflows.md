@@ -7,12 +7,18 @@ Use these command paths when an APM task needs exact CLI behavior instead of app
 Install APM itself:
 
 ```text
-# macOS / Linux
+# macOS (Homebrew — preferred)
+brew install apm
+# Update: brew upgrade apm
+
+# macOS / Linux (no Homebrew)
 curl -sSL https://aka.ms/apm-unix | sh
 
 # Windows (PowerShell)
 irm https://aka.ms/apm-windows | iex
 ```
+
+Additional installers (pip, Scoop, manual) are documented at `https://microsoft.github.io/apm/getting-started/installation/`. After a standalone Unix install, follow the installer's shell-specific `PATH` guidance if `apm` is not found in the current terminal.
 
 Create or initialize a project:
 
