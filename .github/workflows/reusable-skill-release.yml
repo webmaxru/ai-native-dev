@@ -40,7 +40,7 @@ jobs:
   debounce:
     runs-on: ubuntu-latest
     concurrency:
-      group: skill-release-debounce-${{ github.repository }}
+      group: skill-release-debounce-${{ github.repository }}${{ (inputs.dry_run || github.event_name == 'pull_request') && format('-preview-{0}', github.run_id) || '' }}
       cancel-in-progress: true
     steps:
       - name: Debounce related updates
@@ -52,7 +52,7 @@ jobs:
     needs: debounce
     runs-on: ubuntu-latest
     concurrency:
-      group: skill-release-publish-${{ github.repository }}
+      group: skill-release-publish-${{ github.repository }}${{ (inputs.dry_run || github.event_name == 'pull_request') && format('-preview-{0}', github.run_id) || '' }}
       cancel-in-progress: false
     outputs:
       released: ${{ steps.result.outputs.released }}
