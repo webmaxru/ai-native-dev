@@ -15,7 +15,7 @@ It has no dependencies and no build step. It talks to GitHub only through your o
 
 Use the user scope to get the canvas in every repository you work in. It does not depend on the folder you are in: the repositories it monitors are chosen in its own Settings tab ([connect more repositories](#connect-more-repositories)), so one install covers all of them.
 
-This repository carries a project copy, so sessions started here load that copy. Copilot ignores a user copy that has the same name as a project copy, so the two never run together. They share one settings file; keep both on the same version ([update](#install-or-update)). To give another repository's contributors the canvas, copy the folder to `.github/extensions/skill-ops-center/` there and commit it.
+This repository carries a project copy, so sessions started here load that copy. Copilot ignores a user copy that has the same name as a project copy, so the two never run together. They share one settings file; keep both on the same version ([update](#install-or-update)). To give another repository's contributors the canvas, copy the folder to `.github/extensions/skill-ops-center/` there and commit it. Copilot loads a project copy as code in every session opened in that repository, so review changes under `.github/extensions/` as you would any executable code.
 
 ## Requirements
 
@@ -167,7 +167,7 @@ rm -rf "${COPILOT_HOME:-$HOME/.copilot}/extensions/skill-ops-center"
 
 ## Development scripts
 
-Run from the extension folder. They need Node and a signed-in `gh`, and they use temporary settings folders, so they never touch your real settings.
+Run from the extension folder of a clone. They need Node and a signed-in `gh`, and they use temporary settings folders, so they never touch your real settings. `smoke-ui.mjs` saves screenshots to `artifacts/shots` (git-ignored), so do not run it in the installed copy.
 
 | Command | Purpose |
 | --- | --- |
