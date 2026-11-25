@@ -84,13 +84,16 @@ export function createActions(c) {
             const args = ["workflow", "run", file, "-R", repo, "--ref", ref];
             for (const [k, v] of Object.entries(inputs)) args.push("-f", `${k}=${v}`);
             await gh(args);
-            await sleep(2500);
             let run = null;
-            try {
-                const res = await api(`repos/${repo}/actions/workflows/${wf.id}/runs?event=workflow_dispatch&per_page=3`);
-                run = res.workflow_runs.find((r) => Date.parse(r.created_at) >= startedAt - 30000) ?? null;
-            } catch {
-                /* the dispatch itself succeeded */
+            // GitHub can take several seconds to list a run it has just queued.
+            for (let attempt = 0; attempt < 4 && !run; attempt++) {
+                await sleep(attempt === 0 ? 2500 : 2000);
+                try {
+                    const res = await api(`repos/${repo}/actions/workflows/${wf.id}/runs?event=workflow_dispatch&per_page=3`);
+                    run = res.workflow_runs.find((r) => Date.parse(r.created_at) >= startedAt - 30000) ?? null;
+                } catch {
+                    break; // the dispatch itself succeeded
+                }
             }
             changed(repo, "runs", "wfruns");
             return { ok: true, message: `Dispatched ${file} on ${repo}@${ref}`, url: run?.html_url ?? wf.url, runId: run?.id ?? null };

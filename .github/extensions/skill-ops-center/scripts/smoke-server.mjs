@@ -177,6 +177,7 @@ try {
     if (process.env.LIVE_DRY_RUN === "1") {
         const live = await act({ type: "dispatch", repo: hub.repo, workflow: hubRelease.file, inputs: { dry_run: "true", bump: "auto" } });
         check("LIVE release dry run dispatched", live.status === 200 && live.json.ok, live.json?.url ?? live.text);
+        check("LIVE dispatch resolved the run id", Boolean(live.json?.runId), live.json?.runId ? `run ${live.json.runId}` : "no run found in the lookup window");
         if (live.json?.runId) {
             await new Promise((r) => setTimeout(r, 5000));
             const d = await call("GET", `/api/run?repo=${encodeURIComponent(hub.repo)}&id=${live.json.runId}`);
