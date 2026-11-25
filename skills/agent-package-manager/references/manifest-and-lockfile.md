@@ -106,6 +106,8 @@ APM enforces two layers of MCP server security:
 `apm-policy.yml` inheritance flows enterprise → org → repo and is tighten-only (a downstream policy can only add restrictions, never relax them).
 
 Key points:
+* An `executables:` policy section can require approval before hooks and MCP servers deploy; an inventory can be exported as CycloneDX or SPDX on demand. Verify exact syntax in the Governance Guide.
+* In CI, `apm install --frozen` fails when `apm.yml` and `apm.lock.yaml` disagree, and `apm audit --ci` checks the repository against policy.
 * Policy is enforced automatically at `apm install`; no extra command is needed.
 * Transitive MCP servers that violate policy are blocked before they reach disk.
 * See the [Governance Guide](https://microsoft.github.io/apm/enterprise/governance-guide/) for enterprise configuration.
